@@ -3,36 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#02070c">
+<meta name="theme-color" content="#02060b">
 <title>GRID // SAM</title>
 
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#01060b;color:#dffcff;font-family:Arial,sans-serif}
-body{background:
-radial-gradient(circle at 50% 45%,#06405a55,transparent 30%),
-linear-gradient(#00bfff08 1px,transparent 1px),
-linear-gradient(90deg,#00bfff08 1px,transparent 1px);
-background-size:auto,45px 45px,45px 45px}
 
-#app{position:fixed;inset:0;overflow:hidden}
+html,body{
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#02060b;
+color:#d8fbff;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:
+radial-gradient(circle at 50% 45%,rgba(0,180,255,.14),transparent 32%),
+#02060b;
+}
+
+button{
+font-family:inherit;
+-webkit-tap-highlight-color:transparent;
+}
+
+#app{
+position:fixed;
+inset:0;
+overflow:hidden;
+}
+
+/* GRID */
 
 .grid{
 position:absolute;
 width:180%;
-height:110%;
+height:130%;
 left:-40%;
-bottom:-55%;
-transform:rotateX(65deg);
+bottom:-65%;
+transform:perspective(500px) rotateX(62deg);
 background-image:
-linear-gradient(#08d9ff25 1px,transparent 1px),
-linear-gradient(90deg,#08d9ff25 1px,transparent 1px);
+linear-gradient(rgba(0,210,255,.15) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,210,255,.15) 1px,transparent 1px);
 background-size:45px 45px;
-animation:move 8s linear infinite;
-box-shadow:0 -20px 80px #00cfff22
+animation:gridMove 5s linear infinite;
 }
 
-@keyframes move{
+@keyframes gridMove{
+from{background-position:0 0,0 0}
 to{background-position:0 45px,45px 0}
 }
 
@@ -40,4 +61,646 @@ to{background-position:0 45px,45px 0}
 position:absolute;
 inset:0;
 pointer-events:none;
-background
+background:repeating-linear-gradient(
+0deg,
+transparent 0px,
+transparent 5px,
+rgba(50,220,255,.025) 6px
+);
+}
+
+.vignette{
+position:absolute;
+inset:0;
+pointer-events:none;
+box-shadow:inset 0 0 130px #000;
+z-index:100;
+}
+
+/* TOP */
+
+.top{
+position:absolute;
+top:18px;
+left:18px;
+right:18px;
+z-index:50;
+display:flex;
+justify-content:space-between;
+}
+
+.logo{
+font-size:11px;
+letter-spacing:4px;
+color:#42eaff;
+text-shadow:0 0 12px #00cfff;
+}
+
+.status{
+font-size:9px;
+letter-spacing:2px;
+color:#648f9c;
+}
+
+.status b{
+color:#36eeff;
+}
+
+/* SCREENS */
+
+.screen{
+position:absolute;
+inset:0;
+display:none;
+z-index:10;
+}
+
+.screen.active{
+display:block;
+}
+
+/* PORTAL */
+
+.portal{
+position:absolute;
+width:210px;
+height:210px;
+left:50%;
+top:43%;
+transform:translate(-50%,-50%);
+border-radius:50%;
+border:1px solid rgba(50,230,255,.45);
+box-shadow:
+0 0 20px rgba(0,220,255,.25),
+0 0 80px rgba(0,120,255,.15);
+}
+
+.portal:before{
+content:"";
+position:absolute;
+inset:20px;
+border-radius:50%;
+border:1px dashed rgba(40,220,255,.6);
+animation:spin 8s linear infinite;
+}
+
+.portal:after{
+content:"";
+position:absolute;
+inset:55px;
+border-radius:50%;
+border:1px solid rgba(40,220,255,.65);
+box-shadow:0 0 25px #00cfff55;
+animation:spin 4s linear infinite reverse;
+}
+
+@keyframes spin{
+to{transform:rotate(360deg)}
+}
+
+/* WOLF */
+
+.wolf{
+position:absolute;
+left:50%;
+top:43%;
+transform:translate(-50%,-50%);
+font-size:78px;
+z-index:5;
+filter:
+drop-shadow(0 0 5px #fff)
+drop-shadow(0 0 12px #27eaff)
+drop-shadow(0 0 35px #008cff);
+animation:wolfPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes wolfPulse{
+0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+50%{opacity:.68;transform:translate(-50%,-50%) scale(1.08)}
+}
+
+/* ENTRADA */
+
+.entry{
+position:absolute;
+left:50%;
+top:43%;
+transform:translateX(-50%);
+margin-top:130px;
+text-align:center;
+width:90%;
+}
+
+.enter{
+padding:15px 26px;
+background:rgba(2,18,27,.9);
+border:1px solid #27ddff;
+color:#baf7ff;
+letter-spacing:3px;
+font-size:10px;
+box-shadow:
+0 0 15px #00cfff33,
+inset 0 0 15px #00cfff11;
+}
+
+.enter:active{
+background:#063344;
+box-shadow:0 0 30px #00cfff66;
+}
+
+.subtitle{
+margin-top:12px;
+font-size:8px;
+letter-spacing:2px;
+color:#51808c;
+}
+
+/* MAIN */
+
+.mainCenter{
+position:absolute;
+left:50%;
+top:44%;
+transform:translate(-50%,-50%);
+text-align:center;
+width:90%;
+}
+
+.mainSymbol{
+font-size:72px;
+filter:
+drop-shadow(0 0 8px #36eaff)
+drop-shadow(0 0 35px #008cff);
+animation:wolfPulse 2.5s infinite;
+}
+
+.mainTitle{
+margin-top:20px;
+font-size:18px;
+letter-spacing:6px;
+color:#9df5ff;
+text-shadow:0 0 15px #00cfff;
+}
+
+.mainText{
+margin-top:10px;
+font-size:9px;
+letter-spacing:2px;
+color:#527f8c;
+}
+
+/* NAV */
+
+.nav{
+position:absolute;
+z-index:80;
+left:50%;
+bottom:18px;
+transform:translateX(-50%);
+width:96%;
+max-width:500px;
+display:none;
+gap:5px;
+}
+
+.nav button{
+flex:1;
+min-width:0;
+padding:8px 2px;
+background:rgba(2,15,23,.94);
+border:1px solid rgba(35,220,255,.4);
+color:#a8eaf3;
+font-size:7px;
+letter-spacing:1px;
+}
+
+.nav button:active{
+border-color:#35ecff;
+box-shadow:0 0 15px #00cfff55;
+}
+
+.nav span{
+display:block;
+font-size:17px;
+color:#2ceaff;
+margin-bottom:4px;
+}
+
+/* BACK */
+
+.back{
+position:absolute;
+top:55px;
+left:18px;
+z-index:60;
+padding:8px 12px;
+background:#03131ddd;
+border:1px solid #20dfff66;
+color:#91efff;
+font-size:8px;
+letter-spacing:2px;
+}
+
+/* PANELS */
+
+.panel{
+position:absolute;
+left:50%;
+top:46%;
+transform:translate(-50%,-50%);
+width:88%;
+max-width:430px;
+padding:25px;
+background:rgba(2,15,24,.94);
+border:1px solid rgba(35,220,255,.55);
+box-shadow:0 0 50px rgba(0,180,255,.14);
+}
+
+.panel h2{
+margin:0 0 15px;
+font-size:15px;
+letter-spacing:4px;
+color:#52eaff;
+}
+
+.panel p{
+font-size:11px;
+line-height:1.7;
+color:#6996a1;
+}
+
+.bar{
+height:4px;
+margin-top:20px;
+background:#09232d;
+}
+
+.bar i{
+display:block;
+height:100%;
+background:#27eaff;
+box-shadow:0 0 15px #00dfff;
+}
+
+/* IDENTITY DISC */
+
+.profile{
+position:absolute;
+left:50%;
+top:47%;
+transform:translate(-50%,-50%);
+width:100%;
+text-align:center;
+}
+
+.disc{
+position:relative;
+width:min(70vw,280px);
+aspect-ratio:1;
+margin:auto;
+border-radius:50%;
+background:
+radial-gradient(circle,
+#dfffff 0 2%,
+#149bc1 2.5% 6%,
+#03141d 7% 17%,
+#0cdfff 17.5% 18%,
+#031018 19% 31%,
+#12dfff 31.5% 32%,
+#02090e 33% 49%,
+#0cdfff 49.5% 50%,
+#02090e 51% 65%,
+#20eaff 65.5% 66%,
+#02090e 67%);
+border:1px solid #43ecff;
+box-shadow:
+0 0 25px #00dfff77,
+0 0 80px #007cff44;
+animation:discSpin 10s linear infinite;
+}
+
+.disc:before{
+content:"";
+position:absolute;
+inset:12%;
+border:1px dashed rgba(90,240,255,.7);
+border-radius:50%;
+}
+
+.disc:after{
+content:"SAM";
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+font-size:13px;
+letter-spacing:4px;
+color:#d9ffff;
+text-shadow:0 0 12px #00eaff;
+}
+
+@keyframes discSpin{
+to{transform:rotate(360deg)}
+}
+
+.profile h2{
+margin:22px 0 7px;
+font-size:14px;
+letter-spacing:5px;
+}
+
+.profile p{
+margin:5px;
+font-size:8px;
+letter-spacing:2px;
+color:#578895;
+}
+
+.holoWolf{
+font-size:48px;
+margin-top:15px;
+filter:
+drop-shadow(0 0 7px #fff)
+drop-shadow(0 0 15px #29eaff)
+drop-shadow(0 0 30px #007cff);
+animation:holo 1.8s infinite;
+}
+
+@keyframes holo{
+0%,100%{opacity:.95}
+45%{opacity:.55}
+48%{opacity:.9}
+52%{opacity:.35}
+55%{opacity:1}
+}
+
+/* MOBILE */
+
+@media(max-height:650px){
+.portal,.wolf{top:40%}
+.entry{top:40%}
+.mainCenter{top:41%}
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<div class="grid"></div>
+<div class="scan"></div>
+
+<div class="top">
+<div class="logo">GRID // SAM</div>
+<div class="status">SYSTEM <b>ONLINE</b></div>
+</div>
+
+
+<!-- ENTRADA -->
+
+<section id="home" class="screen active">
+
+<div class="portal"></div>
+
+<div class="wolf">🐺</div>
+
+<div class="entry">
+
+<button class="enter" onclick="enterGrid()">
+ENTRAR A LA GRID
+</button>
+
+<div class="subtitle">
+IDENTITY SYSTEM · GRID v3.0
+</div>
+
+</div>
+
+</section>
+
+
+<!-- GRID PRINCIPAL -->
+
+<section id="main" class="screen">
+
+<div class="mainCenter">
+
+<div class="mainSymbol">🐺</div>
+
+<div class="mainTitle">
+WELCOME TO THE GRID
+</div>
+
+<div class="mainText">
+SAM IDENTITY NETWORK · ONLINE
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PERFIL -->
+
+<section id="profile" class="screen">
+
+<button class="back" onclick="show('main')">
+← GRID
+</button>
+
+<div class="profile">
+
+<div class="disc"></div>
+
+<h2>IDENTITY DISC</h2>
+
+<p>SAM · GRID IDENTITY</p>
+
+<div class="holoWolf">🐺</div>
+
+<p>HOLOGRAPHIC WOLF SIGNATURE</p>
+
+</div>
+
+</section>
+
+
+<!-- GARAGE -->
+
+<section id="garage" class="screen">
+
+<button class="back" onclick="show('main')">
+← GRID
+</button>
+
+<div class="panel">
+
+<h2>GARAGE</h2>
+
+<p>
+Hangar digital de vehículos.
+Aquí podremos añadir tus motos,
+diseños y futuros modelos 3D.
+</p>
+
+<div class="bar">
+<i style="width:76%"></i>
+</div>
+
+<p>VEHICLE SYSTEM · 76%</p>
+
+</div>
+
+</section>
+
+
+<!-- AI -->
+
+<section id="ai" class="screen">
+
+<button class="back" onclick="show('main')">
+← GRID
+</button>
+
+<div class="panel">
+
+<h2>AI CORE</h2>
+
+<p>
+Núcleo de inteligencia artificial
+reservado para el futuro asistente
+de la GRID.
+</p>
+
+<div class="bar">
+<i style="width:91%"></i>
+</div>
+
+<p>NEURAL CORE · 91%</p>
+
+</div>
+
+</section>
+
+
+<!-- ARCHIVE -->
+
+<section id="archive" class="screen">
+
+<button class="back" onclick="show('main')">
+← GRID
+</button>
+
+<div class="panel">
+
+<h2>ARCHIVE</h2>
+
+<p>
+Centro de almacenamiento para
+proyectos, imágenes, documentos
+y registros de la GRID.
+</p>
+
+<div class="bar">
+<i style="width:63%"></i>
+</div>
+
+<p>ARCHIVE STORAGE · 63%</p>
+
+</div>
+
+</section>
+
+
+<!-- SYSTEM -->
+
+<section id="system" class="screen">
+
+<button class="back" onclick="show('main')">
+← GRID
+</button>
+
+<div class="panel">
+
+<h2>SYSTEM</h2>
+
+<p>
+GRID CORE ONLINE.
+Interfaz preparada para futuras
+funciones, sonido y comandos.
+</p>
+
+<div class="bar">
+<i style="width:100%"></i>
+</div>
+
+<p>SYSTEM STATUS · 100%</p>
+
+</div>
+
+</section>
+
+
+<!-- MENU -->
+
+<nav id="nav" class="nav">
+
+<button onclick="show('profile')">
+<span>◉</span>
+PERFIL
+</button>
+
+<button onclick="show('garage')">
+<span>◇</span>
+GARAGE
+</button>
+
+<button onclick="show('ai')">
+<span>◈</span>
+AI
+</button>
+
+<button onclick="show('archive')">
+<span>▣</span>
+ARCHIVE
+</button>
+
+<button onclick="show('system')">
+<span>⚙</span>
+SYSTEM
+</button>
+
+</nav>
+
+<div class="vignette"></div>
+
+</div>
+
+
+<script>
+
+function enterGrid(){
+
+document.getElementById("nav").style.display="flex";
+
+show("main");
+
+}
+
+function show(id){
+
+document.querySelectorAll(".screen").forEach(function(screen){
+
+screen.classList.remove("active");
+
+});
+
+document.getElementById(id).classList.add("active");
+
+}
+
+</script>
+
+</body>
+</html>
