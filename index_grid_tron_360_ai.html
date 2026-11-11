@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#02070b">
+<title>GRID // SAM</title>
+<style>
+:root{
+  --bg:#02070b;--cyan:#00eaff;--cyan2:#65f7ff;--text:#c7f8ff;
+  --muted:#6f9ba5;--line:rgba(0,234,255,.22);--panel:rgba(2,14,20,.88);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+font-family:Arial,Helvetica,sans-serif}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.55;
+ background:
+ linear-gradient(rgba(0,234,255,.045) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,234,255,.045) 1px,transparent 1px);
+ background-size:42px 42px;
+ mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 85%,transparent 100%);
+}
+#app{height:100%;display:flex;flex-direction:column}
+header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;
+border-bottom:1px solid var(--line);background:rgba(1,7,11,.78);backdrop-filter:blur(8px);z-index:5}
+.logo{letter-spacing:7px;font-weight:700;font-size:15px;color:var(--cyan)}
+.status{font-size:11px;letter-spacing:3px;color:#6d858b}.status b{color:var(--cyan)}
+main{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow:auto;padding:28px 18px 110px;display:none}
+.screen.active{display:block}
+.back{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(2,15,21,.72);
+color:var(--cyan2);padding:12px 18px;font-size:11px;letter-spacing:3px;cursor:pointer}
+.hero{max-width:900px;margin:40px auto 0;text-align:center}
+.kicker{font-size:11px;letter-spacing:6px;color:#5b98a3}
+h1{font-size:clamp(28px,7vw,62px);letter-spacing:10px;margin:18px 0;color:#bffaff;text-shadow:0 0 20px rgba(0,234,255,.45)}
+.sub{color:#7297a0;line-height:1.7}
+.cards{max-width:950px;margin:35px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(3,20,27,.92),rgba(2,8,12,.88));
+padding:22px;box-shadow:inset 0 0 35px rgba(0,234,255,.035)}
+.card h2{margin:0 0 10px;color:#66ecf8;letter-spacing:4px;font-size:19px}
+.card p{color:#789ba4;line-height:1.55;font-size:14px}
+.btn{border:1px solid rgba(0,234,255,.38);background:rgba(0,20,27,.72);color:#bffaff;
+padding:13px 16px;letter-spacing:2px;cursor:pointer}
+.btn:active{transform:scale(.98);box-shadow:0 0 18px rgba(0,234,255,.25)}
+nav{position:absolute;left:0;right:0;bottom:0;height:88px;display:flex;gap:8px;padding:10px 12px;
+background:rgba(1,6,10,.9);border-top:1px solid var(--line);z-index:10}
+nav button{flex:1;background:rgba(2,17,23,.78);border:1px solid var(--line);color:#82a9b1;letter-spacing:2px;font-size:10px}
+nav button.active{color:var(--cyan2);box-shadow:0 0 20px rgba(0,234,255,.12) inset}
+#gameScreen{padding:0}
+.gameTop{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;z-index:4;
+font-size:11px;letter-spacing:3px}
+.gameBack{margin-top:56px;margin-left:16px;position:absolute;z-index:4}
+#game{position:absolute;inset:0;width:100%;height:100%;background:#010509;touch-action:none}
+.gameHint{position:absolute;left:50%;bottom:102px;transform:translateX(-50%);z-index:4;text-align:center;
+font-size:10px;letter-spacing:2px;color:#507b83;pointer-events:none}
+.controls{position:absolute;bottom:96px;left:50%;transform:translateX(-50%);z-index:5;display:grid;
+grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,48px);gap:6px}
+.controls button{background:rgba(2,18,24,.72);border:1px solid var(--line);color:var(--cyan2);font-size:20px}
+.controls .up{grid-column:2}.controls .left{grid-column:1;grid-row:2}.controls .down{grid-column:2;grid-row:2}.controls .right{grid-column:3;grid-row:2}
+#vrScreen{padding:0;background:#010508}
+#vr{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.vrHud{position:absolute;top:18px;left:18px;right:18px;z-index:3;display:flex;justify-content:space-between;
+font-size:10px;letter-spacing:3px}
+.vrButtons{position:absolute;bottom:105px;left:0;right:0;z-index:4;display:flex;justify-content:center;gap:10px}
+.vrButtons button{background:rgba(2,15,20,.75);border:1px solid var(--line);color:var(--cyan2);padding:13px 15px;letter-spacing:2px}
+.modal{position:absolute;inset:0;background:rgba(0,4,7,.8);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
+.modal.show{display:flex}.modalBox{max-width:420px;border:1px solid var(--line);background:#031016;padding:26px;text-align:center;
+box-shadow:0 0 50px rgba(0,234,255,.12)}.modalBox h2{letter-spacing:4px;color:var(--cyan2)}
+.modalBox p{color:#80a1a9;line-height:1.6}.modalBox button{margin-top:10px}
+@media(min-width:800px){nav{left:50%;right:auto;transform:translateX(-50%);width:min(720px,95%);border:1px solid var(--line);bottom:14px}.screen{padding-left:40px;padding-right:40px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="logo">G R I D // S A M</div>
+  <div class="status">SYSTEM <b>ONLINE</b></div>
+</header>
+
+<main>
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="kicker">DIGITAL FRONTIER // CORE ONLINE</div>
+    <h1>GRID</h1>
+    <p class="sub">Un mundo digital experimental: inteligencia artificial, vehículos de luz,
+    arquitectura 3D y una futura interfaz inmersiva.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><h2>GARAGE</h2><p>Hangar digital para vehículos, diseños y futuros modelos 3D.</p><button class="btn" onclick="openScreen('garage')">ENTRAR</button></div>
+    <div class="card"><h2>AI CORE</h2><p>Interfaz preparada para conectar un backend de IA. Sin exponer claves secretas en GitHub Pages.</p><button class="btn" onclick="openScreen('ai')">ABRIR IA</button></div>
+    <div class="card"><h2>LIGHTCYCLE</h2><p>Juego funcional con rival automático, paredes de luz y estelas que desaparecen lentamente.</p><button class="btn" onclick="openGame()">JUGAR</button></div>
+    <div class="card"><h2>VR 360</h2><p>Exploración 360° con arrastre táctil y orientación del teléfono. No requiere gafas.</p><button class="btn" onclick="openVR()">ENTRAR</button></div>
+  </div>
+</section>
+
+<section id="garage" class="screen">
+  <button class="back" onclick="goHome()">← BACK / GRID</button>
+  <div class="hero"><div class="kicker">VEHICLE SYSTEM</div><h1>GARAGE</h1><p class="sub">Espacio preparado para tus motos, conceptos y escenas 3D.</p></div>
+  <div class="cards"><div class="card"><h2>LIGHTCYCLE</h2><p>Vehículo de luz listo para el simulador.</p><button class="btn" onclick="openGame()">SIMULAR</button></div>
+  <div class="card"><h2>3D CITY</h2><p>Vista de ciudad digital con profundidad, edificios y horizonte.</p><button class="btn" onclick="openVR()">EXPLORAR 360°</button></div></div>
+</section>
+
+<section id="ai" class="screen">
+  <button class="back" onclick="goHome()">← BACK / GRID</button>
+  <div class="hero"><div class="kicker">NEURAL INTERFACE // JARVIS MODE</div><h1>AI CORE</h1>
+  <p class="sub">GRID AI combina memoria local, voz, comandos del sistema, consultas públicas y un backend opcional de IA generativa.</p></div>
+  <div class="card" style="max-width:860px;margin:25px auto">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <span id="aiStatus" class="btn" style="flex:1;min-width:180px">● LOCAL CORE ONLINE</span>
+      <button class="btn" onclick="toggleVoice()" id="voiceToggle">🔊 VOZ: ON</button>
+      <button class="btn" onclick="startListening()" id="micBtn">🎙 HABLAR</button>
+    </div>
+    <input id="endpoint" class="btn" style="width:100%;margin-bottom:8px" placeholder="Backend IA opcional: https://tu-servidor/api/chat">
+    <div style="font-size:10px;letter-spacing:2px;color:#537d86;margin:0 0 12px">BACKEND: OPCIONAL · INTERNET: WIKIPEDIA PÚBLICA · MEMORIA: LOCAL</div>
+    <div id="chat" style="height:310px;overflow:auto;border:1px solid var(--line);padding:14px;margin-bottom:10px;color:#8fb4bc"></div>
+    <div style="display:flex;gap:8px">
+      <input id="prompt" class="btn" style="flex:1;min-width:0" placeholder="Pregúntale algo a GRID AI...">
+      <button class="btn" onclick="askAI()">ENVIAR</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" onclick="quickAI('¿Qué puedes hacer?')">CAPACIDADES</button>
+      <button class="btn" onclick="quickAI('¿Qué recuerdas de mí?')">MEMORIA</button>
+      <button class="btn" onclick="quickAI('¿Qué hora es?')">HORA</button>
+      <button class="btn" onclick="clearChat()">LIMPIAR CHAT</button>
+      <button class="btn" onclick="clearMemory()">BORRAR MEMORIA</button>
+    </div>
+  </div>
+</section>
+
+<section id="gameScreen" class="screen">
+  <div class="gameTop"><span>SCORE <b id="score">0</b></span><span>LIGHTCYCLE // 1.0X</span></div>
+  <button class="back gameBack" onclick="exitGame()">← EXIT</button>
+  <canvas id="game"></canvas>
+  <div class="gameHint">DESLIZA / FLECHAS / BOTONES PARA GIRAR</div>
+  <div class="controls">
+    <button class="up" data-dir="up">▲</button><button class="left" data-dir="left">◀</button>
+    <button class="down" data-dir="down">▼</button><button class="right" data-dir="right">▶</button>
+  </div>
+</section>
+
+<section id="vrScreen" class="screen">
+  <div class="vrHud"><span>GRID // 360°</span><span id="vrMode">TOUCH MODE</span></div>
+  <button class="back" style="position:absolute;top:56px;left:16px;z-index:4" onclick="exitVR()">← BACK</button>
+  <canvas id="vr"></canvas>
+  <div class="vrButtons">
+    <button onclick="requestMotion()">ACTIVAR SENSOR</button>
+    <button onclick="vrReset()">CENTRAR</button>
+  </div>
+</section>
+
+<div id="modal" class="modal"><div class="modalBox"><h2 id="modalTitle">LIGHTCYCLE</h2><p id="modalText"></p><button class="btn" onclick="closeModal()">CONTINUAR</button></div></div>
+</main>
+
+<nav>
+  <button onclick="goHome()">◉<br>PERFIL</button>
+  <button onclick="openScreen('garage')">◇<br>GARAGE</button>
+  <button onclick="openScreen('ai')">◈<br>AI</button>
+  <button onclick="openGame()">□<br>LIGHTCYCLE</button>
+  <button onclick="openVR()">⚙<br>360°</button>
+</nav>
+</div>
+
+<script>
+/* ---------- NAVEGACIÓN ---------- */
+const screens=['home','garage','ai','gameScreen','vrScreen'];
+function openScreen(id){stopGame();stopVR();screens.forEach(x=>document.getElementById(x).classList.remove('active'));document.getElementById(id).classList.add('active')}
+function goHome(){openScreen('home')}
+function openGame(){openScreen('gameScreen');startGame()}
+function exitGame(){stopGame();goHome()}
+function openVR(){openScreen('vrScreen');startVR()}
+function exitVR(){stopVR();goHome()}
+
+/* ---------- LIGHTCYCLE ---------- */
+const gc=document.getElementById('game'),ctx=gc.getContext('2d');
+let raf=0,gameRunning=false,last=0,score=0,grid=24,player,rival,trail=[],rivalTrail=[],particles=[];
+const dirs={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+function resizeGame(){gc.width=innerWidth*devicePixelRatio;gc.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+addEventListener('resize',resizeGame);
+function startGame(){
+ resizeGame();gameRunning=true;score=0;document.getElementById('score').textContent=0;
+ const w=innerWidth,h=innerHeight;
+ player={x:w*.28,y:h*.55,dir:dirs.right,next:dirs.right,speed:190};
+ rival={x:w*.72,y:h*.45,dir:dirs.left,next:dirs.left,speed:175,aiTimer:0};
+ trail=[];rivalTrail=[];particles=[];last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(gameLoop);
+}
+function stopGame(){gameRunning=false;cancelAnimationFrame(raf)}
+function turn(d){
+ if(!gameRunning)return;
+ const nd=dirs[d];if(!nd)return;
+ if(nd.x===-player.dir.x && nd.y===-player.dir.y)return;
+ player.next=nd;
+}
+document.querySelectorAll('.controls button').forEach(b=>b.addEventListener('pointerdown',()=>turn(b.dataset.dir)));
+addEventListener('keydown',e=>{
+ const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
+ if(map[e.key]){e.preventDefault();turn(map[e.key])}
+});
+let touchStart=null;
+gc.addEventListener('pointerdown',e=>{touchStart={x:e.clientX,y:e.clientY}});
+gc.addEventListener('pointerup',e=>{
+ if(!touchStart)return;let dx=e.clientX-touchStart.x,dy=e.clientY-touchStart.y;
+ if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;
+ if(Math.abs(dx)>Math.abs(dy))turn(dx>0?'right':'left');else turn(dy>0?'down':'up');touchStart=null;
+});
+function moveBike(b,dt){b.dir=b.next;b.x+=b.dir.x*b.speed*dt;b.y+=b.dir.y*b.speed*dt}
+function addTrail(arr,b){arr.push({x:b.x,y:b.y,t:performance.now()})}
+function rivalAI(){
+ const margin=70, w=innerWidth,h=innerHeight;
+ rival.aiTimer-=1/60;
+ if(rival.aiTimer>0)return;
+ rival.aiTimer=.25+Math.random()*.5;
+ const options=[dirs.up,dirs.down,dirs.left,dirs.right].filter(d=>!(d.x===-rival.dir.x&&d.y===-rival.dir.y));
+ const safe=options.filter(d=>{
+   const nx=rival.x+d.x*80,ny=rival.y+d.y*80;
+   return nx>margin&&nx<w-margin&&ny>100&&ny<h-100&&
+     !hitsTrail(nx,ny,trail)&&!hitsTrail(nx,ny,rivalTrail);
+ });
+ if(safe.length)rival.next=safe[Math.floor(Math.random()*safe.length)];
+}
+function hitsTrail(x,y,arr){for(let i=0;i<arr.length;i+=3){if(Math.hypot(x-arr[i].x,y-arr[i].y)<12)return true}return false}
+function gameLoop(now){
+ if(!gameRunning)return;const dt=Math.min(.035,(now-last)/1000);last=now;
+ rivalAI();moveBike(player,dt);moveBike(rival,dt);addTrail(trail,player);addTrail(rivalTrail,rival);
+ const w=innerWidth,h=innerHeight;
+ if(player.x<25||player.x>w-25||player.y<80||player.y>h-110||hitsTrail(player.x,player.y,trail.slice(0,-12))||hitsTrail(player.x,player.y,rivalTrail.slice(0,-8)))return gameOver('TU LIGHTCYCLE FUE TERMINADA');
+ if(rival.x<25||rival.x>w-25||rival.y<80||rival.y>h-110||hitsTrail(rival.x,rival.y,trail.slice(0,-8))||hitsTrail(rival.x,rival.y,rivalTrail.slice(0,-12)))return gameOver('EL RIVAL FUE ELIMINADO');
+ if(Math.hypot(player.x-rival.x,player.y-rival.y)<18)return gameOver('COLISIÓN DE LIGHTCYCLES');
+ score++;document.getElementById('score').textContent=Math.floor(score/5);drawGame(now);raf=requestAnimationFrame(gameLoop)
+}
+function drawGrid(){
+ const w=innerWidth,h=innerHeight;ctx.fillStyle='#010509';ctx.fillRect(0,0,w,h);
+ ctx.strokeStyle='rgba(0,234,255,.075)';ctx.lineWidth=1;
+ for(let x=0;x<w;x+=42){ctx.beginPath();ctx.moveTo(x,70);ctx.lineTo(x,h-90);ctx.stroke()}
+ for(let y=70;y<h-90;y+=42){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+}
+function drawTrail(arr,color){
+ const now=performance.now();ctx.lineCap='round';ctx.lineJoin='round';
+ for(let i=1;i<arr.length;i++){
+   const age=now-arr[i].t;if(age>6000)continue;const alpha=Math.max(0,1-age/6000);
+   ctx.strokeStyle=color.replace('ALPHA',alpha.toFixed(3));ctx.lineWidth=4;
+   ctx.beginPath();ctx.moveTo(arr[i-1].x,arr[i-1].y);ctx.lineTo(arr[i].x,arr[i].y);ctx.stroke();
+ }
+}
+function drawBike(b,color){
+ ctx.save();ctx.translate(b.x,b.y);ctx.shadowBlur=22;ctx.shadowColor=color;
+ ctx.strokeStyle=color;ctx.lineWidth=3;ctx.strokeRect(-9,-9,18,18);ctx.fillStyle='#fff';ctx.fillRect(-3,-3,6,6);ctx.restore()
+}
+function drawGame(){
+ drawGrid();drawTrail(trail,'rgba(0,234,255,ALPHA)');drawTrail(rivalTrail,'rgba(255,72,188,ALPHA)');
+ drawBike(player,'#00eaff');drawBike(rival,'#ff48bc');
+}
+function gameOver(msg){
+ stopGame();document.getElementById('modalTitle').textContent='LIGHTCYCLE TERMINATED';
+ document.getElementById('modalText').textContent=msg+'\\n\\nSCORE: '+Math.floor(score/5)+'\\n\\nPulsa CONTINUAR para volver al juego.';
+ document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');startGame()}
+
+/* ---------- VR 360° SIN GAFAS ---------- */
+const vc=document.getElementById('vr'),vctx=vc.getContext('2d');let vrRaf=0,vrRunning=false,yaw=0,pitch=0,drag=null,motion=false;
+function resizeVR(){vc.width=innerWidth*devicePixelRatio;vc.height=innerHeight*devicePixelRatio;vctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+function startVR(){resizeVR();vrRunning=true;cancelAnimationFrame(vrRaf);vrRaf=requestAnimationFrame(drawVR)}
+function stopVR(){vrRunning=false;cancelAnimationFrame(vrRaf)}
+function vrReset(){yaw=0;pitch=0}
+vc.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw,pitch}})
+vc.addEventListener('pointermove',e=>{if(!drag)return;yaw=drag.yaw-(e.clientX-drag.x)*.006;pitch=Math.max(-1.2,Math.min(1.2,drag.pitch+(e.clientY-drag.y)*.004))})
+vc.addEventListener('pointerup',()=>drag=null);vc.addEventListener('pointercancel',()=>drag=null);
+async function requestMotion(){
+ try{
+  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+   const p=await DeviceOrientationEvent.requestPermission();if(p!=='granted')return;
+  }
+  addEventListener('deviceorientation',e=>{if(e.alpha!=null){yaw=e.alpha*Math.PI/180;pitch=(e.beta-45)*Math.PI/180}});
+  motion=true;document.getElementById('vrMode').textContent='MOTION SENSOR';
+ }catch(e){document.getElementById('vrMode').textContent='TOUCH MODE'}
+}
+function drawVR(){
+ if(!vrRunning)return;const w=innerWidth,h=innerHeight;
+ vctx.fillStyle='#010509';vctx.fillRect(0,0,w,h);
+ const horizon=h*.46+pitch*120;
+ // Cielo con gradiente
+ const g=vctx.createLinearGradient(0,0,0,h);g.addColorStop(0,'#02070c');g.addColorStop(.55,'#03141c');g.addColorStop(1,'#010408');
+ vctx.fillStyle=g;vctx.fillRect(0,0,w,h);
+ // ciudad panorámica procedural con profundidad
+ const base=horizon+40;
+ for(let layer=0;layer<4;layer++){
+   const count=18+layer*7,depth=layer/4;
+   for(let i=0;i<count;i++){
+    const x=((i/count)*w + yaw*(80+layer*100))%w;
+    const xx=x<0?x+w:x;
+    const bw=20+((i*37)%45)*(1-depth*.35);
+    const bh=45+((i*83)%170)*(1-depth*.25);
+    const y=base-bh;
+    vctx.strokeStyle=`rgba(0,210,240,${.12+.12*(1-depth)})`;
+    vctx.strokeRect(xx,y,bw,bh);
+    vctx.fillStyle=`rgba(0,234,255,${.025+.025*(1-depth)})`;vctx.fillRect(xx,y,bw,bh);
+    for(let wy=y+12;wy<base-8;wy+=18){
+      if(((i+Math.floor(wy))%3)!==0){vctx.fillStyle='rgba(75,235,255,.25)';vctx.fillRect(xx+5,wy,4,2)}
+    }
+   }
+ }
+ // horizonte
+ vctx.strokeStyle='rgba(0,234,255,.55)';vctx.lineWidth=2;vctx.beginPath();vctx.moveTo(0,horizon);vctx.lineTo(w,horizon);vctx.stroke();
+ // suelo 3D
+ vctx.strokeStyle='rgba(0,234,255,.16)';vctx.lineWidth=1;
+ for(let i=-14;i<=14;i++){const x=w/2+i*45;vctx.beginPath();vctx.moveTo(w/2+(x-w/2)*.15,horizon);vctx.lineTo(x,h);vctx.stroke()}
+ for(let j=1;j<11;j++){const y=horizon+(j*j)*7;vctx.beginPath();vctx.moveTo(0,y);vctx.lineTo(w,y);vctx.stroke()}
+ // portal central
+ vctx.save();vctx.translate(w/2,h*.55);vctx.rotate(yaw*.15);vctx.strokeStyle='rgba(0,234,255,.75)';vctx.shadowBlur=25;vctx.shadowColor='#00eaff';
+ vctx.lineWidth=2;vctx.strokeRect(-55,-80,110,160);vctx.strokeRect(-38,-60,76,120);vctx.restore();
+ vctx.fillStyle='#aefaff';vctx.font='11px Arial';vctx.textAlign='center';vctx.fillText('GRID 360° // ARQUITECTURA DIGITAL',w/2,h*.18);
+ vrRaf=requestAnimationFrame(drawVR)
+}
+addEventListener('resize',()=>{if(vrRunning)resizeVR();if(gameRunning)resizeGame()});
+
+/* ---------- GRID AI / JARVIS-LIKE CORE ---------- */
+const AI_MEMORY_KEY='grid_sam_memory_v2', AI_CHAT_KEY='grid_sam_chat_v2';
+let voiceEnabled=true, recognition=null, listening=false;
+const aiSystem=`Eres GRID AI, el asistente digital del usuario dentro de una interfaz futurista inspirada en ciencia ficción. Responde en español salvo que el usuario pida otro idioma. Sé preciso, útil y natural. Puedes ayudar a navegar la interfaz, explicar tecnología, programar, planear proyectos y analizar información pública. No afirmes tener acceso al teléfono, cámara, micrófono, archivos privados o sistemas externos si el navegador no te lo ha concedido. Si necesitas conocimiento actual, usa el contexto de Internet que te entregue el sistema o pide un backend. Nunca expongas claves secretas.`;
+function getMemory(){try{return JSON.parse(localStorage.getItem(AI_MEMORY_KEY)||'[]')}catch{return[]}}
+function saveMemory(m){localStorage.setItem(AI_MEMORY_KEY,JSON.stringify(m.slice(-30)))}
+function getChat(){try{return JSON.parse(localStorage.getItem(AI_CHAT_KEY)||'[]')}catch{return[]}}
+function saveChat(c){localStorage.setItem(AI_CHAT_KEY,JSON.stringify(c.slice(-40)))}
+function addChat(role,text){const chat=document.getElementById('chat');const div=document.createElement('div');div.style.margin='10px 0';div.innerHTML=`<b>${role==='user'?'TÚ':'GRID AI'}:</b> ${escapeHtml(text)}`;chat.appendChild(div);chat.scrollTop=chat.scrollHeight}
+function renderChat(){const chat=document.getElementById('chat');chat.innerHTML='';getChat().forEach(m=>addChat(m.role,m.content));}
+function clearChat(){localStorage.removeItem(AI_CHAT_KEY);renderChat();}
+function clearMemory(){localStorage.removeItem(AI_MEMORY_KEY);addChat('assistant','Memoria local eliminada. El núcleo sigue operativo.');}
+function quickAI(q){document.getElementById('prompt').value=q;askAI()}
+function speak(text){if(!voiceEnabled||!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-ES';u.rate=.96;u.pitch=.92;window.speechSynthesis.speak(u)}
+function toggleVoice(){voiceEnabled=!voiceEnabled;document.getElementById('voiceToggle').textContent=voiceEnabled?'🔊 VOZ: ON':'🔇 VOZ: OFF';if(!voiceEnabled&&'speechSynthesis'in window)window.speechSynthesis.cancel()}
+function initRecognition(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;
+ const r=new SR();r.lang='es-CO';r.continuous=false;r.interimResults=false;
+ r.onstart=()=>{listening=true;document.getElementById('micBtn').textContent='⏹ ESCUCHANDO...'};
+ r.onend=()=>{listening=false;document.getElementById('micBtn').textContent='🎙 HABLAR'};
+ r.onerror=()=>{listening=false;document.getElementById('micBtn').textContent='🎙 HABLAR'};
+ r.onresult=e=>{document.getElementById('prompt').value=e.results[0][0].transcript;askAI()};return r;
+}
+function startListening(){if(listening){recognition?.stop();return}if(!recognition)recognition=initRecognition();if(!recognition){addChat('assistant','Este navegador no ofrece reconocimiento de voz. Puedes escribir la orden.');return}try{recognition.start()}catch{}}
+function setStatus(t){document.getElementById('aiStatus').textContent='● '+t}
+function remember(text){const m=getMemory();m.push({text,at:new Date().toISOString()});saveMemory(m)}
+function localCommand(q){
+ const l=q.toLowerCase().trim();
+ if(/^((que|qué) )?hora( es|\?)?$/.test(l)||l.includes('qué hora'))return `Son las ${new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}.`;
+ if(l.includes('qué fecha')||l.includes('que fecha')||l.includes('qué día es')||l.includes('que dia es'))return `Hoy es ${new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}.`;
+ if(l.includes('abre garage')||l.includes('abrir garage')){openScreen('garage');return 'Garage abierto.'}
+ if(l.includes('abre ia')||l.includes('abre ai')){openScreen('ai');return 'AI Core activo.'}
+ if(l.includes('jugar')||l.includes('lightcycle')){openGame();return 'Lightcycle iniciado. Rival conectado.'}
+ if(l.includes('360')||l.includes('realidad virtual')){openVR();return 'Modo 360 activado.'}
+ if(l.startsWith('recuerda que ')){const x=q.slice(q.toLowerCase().indexOf('recuerda que ')+13).trim();remember(x);return 'Guardado en mi memoria local.'}
+ if(l.includes('qué recuerdas')||l.includes('que recuerdas')){const m=getMemory();return m.length?`Recuerdo ${m.length} elemento(s): ${m.slice(-8).map(x=>x.text).join(' · ')}`:'No tengo recuerdos guardados todavía.'}
+ if(l.includes('borrar memoria')){clearMemory();return 'Memoria local borrada.'}
+ if(l.includes('capacidades')||l.includes('qué puedes hacer')||l.includes('que puedes hacer'))return 'Puedo conversar, usar voz, guardar memoria local, consultar información pública de Wikipedia, ejecutar comandos de la GRID y conectarme a un backend de IA generativa.';
+ return null;
+}
+async function wikiSearch(q){
+ const clean=q.replace(/^(busca|buscar|consulta|consultar|investiga|investigar)\s+/i,'').trim();
+ if(clean.length<3)return null;
+ try{
+  const u='https://es.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(clean)+'&gsrlimit=3&prop=extracts&exintro=1&explaintext=1&format=json&origin=*';
+  const r=await fetch(u,{headers:{Accept:'application/json'}});if(!r.ok)return null;const d=await r.json();const pages=Object.values(d.query?.pages||{});
+  if(!pages.length)return null;
+  return 'He consultado Wikipedia. '+pages.slice(0,3).map(p=>`${p.title}: ${(p.extract||'').slice(0,450)}`).join(' | ');
+ }catch{return null}
+}
+async function askAI(){
+ const input=document.getElementById('prompt'),endpoint=document.getElementById('endpoint'),q=input.value.trim();if(!q)return;
+ input.value='';const history=getChat();history.push({role:'user',content:q});saveChat(history);addChat('user',q);setStatus('PROCESSING...');
+ const local=localCommand(q);
+ if(local){history.push({role:'assistant',content:local});saveChat(history);addChat('assistant',local);speak(local);setStatus('LOCAL CORE ONLINE');return}
+ const ep=endpoint.value.trim();
+ if(ep){
+  try{
+   const payload={message:q,system:aiSystem,memory:getMemory(),history:getChat().slice(-20),source:'GRID // SAM'};
+   const r=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+   if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();const answer=d.answer??d.response??d.message??d.output??JSON.stringify(d);
+   history.push({role:'assistant',content:String(answer)});saveChat(history);addChat('assistant',String(answer));speak(String(answer));setStatus('BACKEND ONLINE');return;
+  }catch(e){addChat('assistant','El backend no respondió. Cambio a núcleo local + consulta pública.');}
+ }
+ const looksWeb=/\b(busca|buscar|consulta|consultar|investiga|investigar|quién|quien|qué es|que es|cómo funciona|como funciona|cuándo|cuando|dónde|donde)\b/i.test(q);
+ let answer=looksWeb?await wikiSearch(q):null;
+ if(!answer)answer='Estoy en modo local. Puedo ejecutar comandos de la GRID y, para respuestas generativas completas, conecta un backend de IA en el campo superior. Para información pública puedo consultar Wikipedia con órdenes como “busca inteligencia artificial”.';
+ history.push({role:'assistant',content:answer});saveChat(history);addChat('assistant',answer);speak(answer);setStatus('LOCAL CORE ONLINE');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+document.getElementById('prompt').addEventListener('keydown',e=>{if(e.key==='Enter')askAI()});
+renderChat();
+</script>
+</body>
+</html>
