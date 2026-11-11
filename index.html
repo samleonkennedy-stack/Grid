@@ -1,1615 +1,1231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#02070b">
-<title>GRID // SAM</title>
-
+<title>GRID // SAM — TRON NETWORK</title>
 <style>
+:root{--c:#18e7ff;--c2:#006cff;--bg:#01060a;--panel:rgba(2,16,24,.82);--text:#b9f7ff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
-html,body{
- margin:0;
- width:100%;
- height:100%;
- overflow:hidden;
- background:#02070b;
- color:#b9f7ff;
- font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
- background:
- radial-gradient(circle at 50% 45%,rgba(0,220,255,.10),transparent 35%),
- linear-gradient(rgba(0,190,255,.045) 1px,transparent 1px),
- linear-gradient(90deg,rgba(0,190,255,.045) 1px,transparent 1px),
- #02070b;
- background-size:auto,45px 45px,45px 45px;
-}
-
-button{
- font:inherit;
- color:inherit;
- background:rgba(0,20,28,.75);
- border:1px solid rgba(0,220,255,.45);
- cursor:pointer;
-}
-
-button:active{
- transform:scale(.96);
-}
-
-#app{
- position:fixed;
- inset:0;
- overflow:hidden;
-}
-
-/* ================= HEADER ================= */
-
-.header{
- position:absolute;
- z-index:50;
- top:0;
- left:0;
- right:0;
- height:72px;
- padding:20px 28px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- background:linear-gradient(#02070bee,transparent);
- letter-spacing:6px;
- font-size:13px;
-}
-
-.logo{
- color:#28e7ff;
- text-shadow:0 0 15px #00dfff;
-}
-
-.status{
- letter-spacing:3px;
- font-size:10px;
-}
-
-.status b{
- color:#22eaff;
-}
-
-/* ================= SCREENS ================= */
-
-.screen{
- position:absolute;
- inset:0;
- display:none;
- overflow:hidden;
-}
-
-.screen.active{
- display:block;
-}
-
-/* ================= HOME ================= */
-
-.home{
- display:flex;
- align-items:center;
- justify-content:center;
- text-align:center;
-}
-
-.homeCore{
- width:min(720px,88vw);
- margin-top:-30px;
-}
-
-.kicker{
- font-size:11px;
- letter-spacing:7px;
- color:#5beaff;
- margin-bottom:20px;
-}
-
-.title{
- font-size:clamp(55px,13vw,120px);
- letter-spacing:15px;
- margin:0;
- color:#d9fbff;
- text-shadow:
- 0 0 8px #00d9ff,
- 0 0 30px #00aaff,
- 0 0 70px rgba(0,210,255,.7);
-}
-
-.subtitle{
- margin-top:15px;
- letter-spacing:6px;
- font-size:12px;
- color:#70a9b5;
-}
-
-.enter{
- margin-top:50px;
- padding:18px 38px;
- letter-spacing:5px;
- font-size:12px;
- box-shadow:
- inset 0 0 20px rgba(0,220,255,.08),
- 0 0 25px rgba(0,220,255,.12);
-}
-
-.enter:hover{
- box-shadow:
- inset 0 0 25px rgba(0,220,255,.15),
- 0 0 35px rgba(0,220,255,.3);
-}
-
-/* ================= GRID ================= */
-
-#cityCanvas{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
-}
-
-.gridUI{
- position:absolute;
- z-index:20;
- inset:0;
- pointer-events:none;
-}
-
-.gridTop{
- position:absolute;
- top:90px;
- left:30px;
- right:30px;
- display:flex;
- justify-content:space-between;
-}
-
-.gridTitle{
- letter-spacing:7px;
- color:#24e6ff;
- text-shadow:0 0 12px #00dfff;
-}
-
-.cityInfo{
- text-align:right;
- font-size:9px;
- letter-spacing:3px;
- color:#5d98a4;
-}
-
-.cityInfo b{
- color:#22eaff;
-}
-
-.gridCenter{
- position:absolute;
- left:50%;
- top:48%;
- transform:translate(-50%,-50%);
- text-align:center;
-}
-
-.cityName{
- font-size:clamp(28px,8vw,65px);
- letter-spacing:12px;
- text-shadow:
- 0 0 15px #00dfff,
- 0 0 45px #0077aa;
-}
-
-.citySub{
- margin-top:15px;
- font-size:10px;
- letter-spacing:5px;
- color:#6999a3;
-}
-
-.gridActions{
- position:absolute;
- bottom:125px;
- left:50%;
- transform:translateX(-50%);
- display:flex;
- gap:10px;
- pointer-events:auto;
-}
-
-.gridActions button{
- padding:13px 20px;
- font-size:10px;
- letter-spacing:3px;
-}
-
-/* ================= FLOOR ================= */
-
-.floor{
- position:absolute;
- z-index:4;
- bottom:0;
- left:-30%;
- width:160%;
- height:33%;
- transform:perspective(450px) rotateX(60deg);
- transform-origin:bottom;
- background:
- linear-gradient(rgba(0,220,255,.22) 1px,transparent 1px),
- linear-gradient(90deg,rgba(0,220,255,.18) 1px,transparent 1px);
- background-size:55px 55px;
- box-shadow:0 -20px 70px rgba(0,200,255,.12);
-}
-
-/* ================= NAV ================= */
-
-.nav{
- position:absolute;
- z-index:80;
- left:14px;
- right:14px;
- bottom:14px;
- height:82px;
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:8px;
-}
-
-.nav button{
- min-width:0;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:8px;
- background:rgba(2,15,22,.9);
- border-color:rgba(0,220,255,.3);
-}
-
-.nav .icon{
- font-size:18px;
- color:#28ddf7;
- text-shadow:0 0 12px #00cfff;
-}
-
-.nav span:last-child{
- font-size:9px;
- letter-spacing:2px;
- color:#6d929b;
-}
-
-/* ================= PANEL ================= */
-
-.panelScreen{
- padding:110px 25px 115px;
- overflow:auto;
-}
-
-.panel{
- width:min(760px,100%);
- margin:auto;
- border:1px solid rgba(0,220,255,.4);
- background:
- linear-gradient(145deg,rgba(0,25,35,.9),rgba(0,8,13,.92));
- box-shadow:
- inset 0 0 50px rgba(0,210,255,.04),
- 0 0 40px rgba(0,180,255,.08);
- padding:35px;
-}
-
-.panel h1{
- margin:0 0 20px;
- font-size:27px;
- letter-spacing:8px;
- color:#54eaff;
- text-shadow:0 0 18px #00d9ff;
-}
-
-.panel p{
- color:#729ba5;
- line-height:1.8;
- font-size:14px;
-}
-
-.bar{
- height:6px;
- background:#062b35;
- margin:25px 0 10px;
- overflow:hidden;
-}
-
-.bar i{
- display:block;
- height:100%;
- background:#20dcf7;
- box-shadow:0 0 18px #00dfff;
-}
-
-/* ================= PROFILE ================= */
-
-.profile{
- text-align:center;
-}
-
-.disc{
- width:min(330px,75vw);
- aspect-ratio:1;
- margin:10px auto 30px;
- border-radius:50%;
- position:relative;
- background:
- radial-gradient(circle,#06131b 0 12%,transparent 12.5%),
- radial-gradient(circle,transparent 0 22%,#00dfff 22.4% 23%,transparent 23.5%),
- radial-gradient(circle,transparent 0 39%,#00dfff 39.4% 40%,transparent 40.5%),
- radial-gradient(circle,transparent 0 57%,#00dfff 57.4% 58%,transparent 58.5%),
- radial-gradient(circle,transparent 0 75%,#00dfff 75.4% 76%,transparent 76.5%),
- #02080d;
- box-shadow:
- 0 0 15px #00dfff,
- 0 0 50px rgba(0,210,255,.4),
- inset 0 0 50px rgba(0,210,255,.2);
-}
-
-.disc:after{
- content:"SAM";
- position:absolute;
- inset:0;
- display:grid;
- place-items:center;
- font-size:20px;
- letter-spacing:8px;
- color:#d5fbff;
- text-shadow:0 0 12px #00dfff;
-}
-
-/* ================= CITY ================= */
-
-.cityCard{
- margin-top:20px;
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:10px;
-}
-
-.cityCard div{
- border:1px solid rgba(0,220,255,.25);
- padding:20px 10px;
- text-align:center;
- background:rgba(0,20,28,.45);
-}
-
-.cityCard b{
- display:block;
- font-size:20px;
- color:#2ee8ff;
- margin-bottom:7px;
-}
-
-.cityCard small{
- color:#638d97;
- letter-spacing:2px;
-}
-
-/* ================= LIGHTCYCLE ================= */
-
-#gameCanvas{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- background:#010508;
-}
-
-.gameHUD{
- position:absolute;
- z-index:30;
- top:75px;
- left:20px;
- right:20px;
- display:flex;
- justify-content:space-between;
- pointer-events:none;
- font-size:11px;
- letter-spacing:3px;
-}
-
-.score{
- color:#2ceaff;
- text-shadow:0 0 12px #00dfff;
-}
-
-.gameHelp{
- position:absolute;
- z-index:30;
- bottom:110px;
- left:50%;
- transform:translateX(-50%);
- text-align:center;
- font-size:9px;
- letter-spacing:2px;
- color:#5c858e;
- pointer-events:none;
-}
-
-.gameControls{
- position:absolute;
- z-index:40;
- left:50%;
- bottom:25px;
- transform:translateX(-50%);
- display:grid;
- grid-template-columns:repeat(3,58px);
- grid-template-rows:repeat(2,58px);
- gap:7px;
-}
-
-.gameControls button{
- border-radius:5px;
- font-size:20px;
- background:rgba(0,30,40,.75);
-}
-
-#up{grid-column:2}
-#left{grid-column:1;grid-row:2}
-#down{grid-column:2;grid-row:2}
-#right{grid-column:3;grid-row:2}
-
-/* ================= BACK ================= */
-
-.back{
- position:absolute;
- z-index:60;
- top:85px;
- left:30px;
- padding:11px 17px;
- font-size:10px;
- letter-spacing:3px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:500px){
- .header{
-  padding:18px 18px;
-  height:65px;
- }
- .gridTop{
-  top:80px;
-  left:18px;
-  right:18px;
- }
- .panel{
-  padding:25px 20px;
- }
- .gridActions{
-  bottom:120px;
- }
- .gridActions button{
-  padding:11px 12px;
-  font-size:8px;
- }
- .cityCard{
-  grid-template-columns:1fr;
- }
-}
-
-.scanlines{
- position:absolute;
- inset:0;
- pointer-events:none;
- z-index:90;
- opacity:.08;
- background:repeating-linear-gradient(
-  to bottom,
-  transparent 0px,
-  transparent 3px,
-  #8ff 4px
- );
- mix-blend-mode:screen;
-}
-
-.vignette{
- position:absolute;
- inset:0;
- pointer-events:none;
- z-index:91;
- box-shadow:inset 0 0 140px #000;
-}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+button{color:var(--text);background:rgba(2,18,27,.85);border:1px solid #0a5364;cursor:pointer}
+button:active{transform:scale(.97)}
+#world{position:fixed;inset:0;overflow:hidden;background:
+radial-gradient(circle at 50% 42%,rgba(0,130,190,.14),transparent 32%),
+linear-gradient(rgba(0,190,255,.045) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,190,255,.045) 1px,transparent 1px);
+background-size:auto,45px 45px,45px 45px}
+#city{position:absolute;inset:0;perspective:600px;overflow:hidden}
+.horizon{position:absolute;left:0;right:0;top:43%;height:57%;transform-origin:50% 0;transform:rotateX(58deg);background:
+linear-gradient(rgba(0,210,255,.13) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,210,255,.13) 1px,transparent 1px);
+background-size:55px 55px;box-shadow:0 -20px 80px rgba(0,190,255,.12)}
+.buildings{position:absolute;inset:15% 0 35%;display:flex;align-items:flex-end;justify-content:space-around;gap:2px;filter:drop-shadow(0 0 8px rgba(0,210,255,.22))}
+.b{width:6%;min-width:20px;background:linear-gradient(90deg,#02080d,#061d28,#02080d);border:1px solid rgba(20,225,255,.35);position:relative;box-shadow:0 0 18px rgba(0,210,255,.08)}
+.b:after{content:"";position:absolute;inset:8px 5px;background:repeating-linear-gradient(to bottom,rgba(20,230,255,.7) 0 2px,transparent 2px 15px);opacity:.5}
+.b:nth-child(1){height:35%}.b:nth-child(2){height:58%}.b:nth-child(3){height:42%}.b:nth-child(4){height:75%}.b:nth-child(5){height:50%}.b:nth-child(6){height:68%}.b:nth-child(7){height:38%}.b:nth-child(8){height:62%}.b:nth-child(9){height:48%}.b:nth-child(10){height:82%}.b:nth-child(11){height:44%}.b:nth-child(12){height:70%}.b:nth-child(13){height:55%}.b:nth-child(14){height:76%}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,220,255,.025) 3px 4px);pointer-events:none}
+#app{position:relative;z-index:5;height:100%;display:flex;flex-direction:column}
+header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;letter-spacing:7px;font-size:13px;background:linear-gradient(180deg,rgba(0,5,9,.85),transparent)}
+.online{color:var(--c)}
+main{flex:1;overflow:auto;padding:18px 20px 105px;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.view{display:none;max-width:900px;margin:auto}
+.view.active{display:block}
+.panel{background:var(--panel);border:1px solid rgba(24,231,255,.35);box-shadow:0 0 35px rgba(0,150,255,.08),inset 0 0 25px rgba(0,180,255,.025);padding:25px;margin:12px 0}
+h1{letter-spacing:9px;font-size:26px;margin:0 0 10px;color:#d7fbff}
+h2{letter-spacing:6px;color:#48eaff;font-size:19px}
+.small{opacity:.65;line-height:1.6}
+.nav{height:82px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px 14px;background:rgba(0,5,9,.92);border-top:1px solid #063947}
+.nav button{font-size:10px;letter-spacing:2px}
+.nav button.active{box-shadow:0 0 18px rgba(24,231,255,.3);border-color:var(--c);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.action{padding:13px 16px;letter-spacing:2px}
+#disc{width:min(72vw,330px);height:min(72vw,330px);margin:25px auto;border-radius:50%;border:3px solid var(--c);box-shadow:0 0 28px var(--c),inset 0 0 35px rgba(0,200,255,.3);display:grid;place-items:center;background:radial-gradient(circle,#0ad9ff22 0 8%,transparent 9% 25%,#08dfff10 26% 27%,transparent 28% 45%,#08dfff12 46% 47%,transparent 48%);animation:spin 18s linear infinite}
+#disc span{font-size:28px;letter-spacing:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#chat{height:48vh;min-height:300px;display:flex;flex-direction:column}
+#messages{flex:1;overflow:auto;padding:10px}
+.msg{padding:12px;margin:8px 0;border-left:2px solid var(--c);background:#03131b}
+.msg.user{border-color:#7c9cff}
+#chatbar{display:flex;gap:8px}
+#prompt{flex:1;min-width:0;background:#020b10;border:1px solid #0b5968;color:#d8fbff;padding:13px}
+#mic{width:54px}
+#gameWrap{position:relative;width:100%;height:min(68vh,620px);background:#01080d;border:1px solid #0a6172;overflow:hidden}
+#gameCanvas{width:100%;height:100%;display:block}
+#gameUI{position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;letter-spacing:3px}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
+.controls button{padding:18px;font-size:20px}
+#vrCanvas{width:100%;height:230px;border:1px solid #0b6577;background:#020a0e}
+.badge{display:inline-block;border:1px solid #0b6070;padding:6px 10px;margin:3px;font-size:10px;letter-spacing:2px}
+.status{color:#55f6ff}
+@media(max-width:600px){header{padding:0 14px;font-size:10px;letter-spacing:4px}.panel{padding:18px}h1{font-size:20px}.nav{height:76px}.nav button{letter-spacing:1px}}
 </style>
 </head>
 
 <body>
 
+<div id="world">
+<div id="city">
+<div class="buildings">
+<div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div>
+<div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div>
+<div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div>
+<div class="b"></div><div class="b"></div>
+</div>
+<div class="horizon"></div>
+</div>
+<div class="scan"></div>
+</div>
+
 <div id="app">
 
-<header class="header">
- <div class="logo">G R I D // S A M</div>
- <div class="status">SYSTEM <b>ONLINE</b></div>
+<header>
+<span>G R I D // S A M</span>
+<span class="online">SYSTEM <b>ONLINE</b></span>
 </header>
 
-<!-- HOME -->
-<section id="home" class="screen home active">
+<main>
 
- <div class="homeCore">
+<section id="home" class="view active">
 
-  <div class="kicker">DIGITAL FRONTIER // ACCESS POINT</div>
+<div class="panel">
+<h1>GRID NETWORK</h1>
 
-  <h1 class="title">GRID</h1>
+<p class="small">
+Una interfaz digital inspirada en una ciudad futurista.
+Núcleo de IA, archivo, vehículos, Light Cycle y acceso experimental a realidad virtual.
+</p>
 
-  <div class="subtitle">
-   SAM // IDENTITY SYSTEM
-  </div>
+<div class="row">
+<button class="action" onclick="show('ai')">ACTIVAR JARVIS</button>
+<button class="action" onclick="show('game')">LIGHT CYCLE</button>
+<button class="action" onclick="show('vr')">ENTRAR VR</button>
+</div>
+</div>
 
-  <button class="enter" onclick="enterGrid()">
-   ENTER THE GRID
-  </button>
-
- </div>
-
-</section>
-
-<!-- CITY -->
-<section id="grid" class="screen">
-
- <canvas id="cityCanvas"></canvas>
-
- <div class="floor"></div>
-
- <div class="gridUI">
-
-  <div class="gridTop">
-   <div class="gridTitle">GRID CITY</div>
-
-   <div class="cityInfo">
-    NETWORK // ACTIVE<br>
-    SECTOR <b>07</b><br>
-    CORE <b>ONLINE</b>
-   </div>
-  </div>
-
-  <div class="gridCenter">
-   <div class="cityName">NEON CITY</div>
-   <div class="citySub">
-    DIGITAL TERRITORY // SAM USER
-   </div>
-  </div>
-
-  <div class="gridActions">
-
-   <button onclick="openScreen('city')">
-    CITY
-   </button>
-
-   <button onclick="startGame()">
-    LIGHTCYCLE
-   </button>
-
-   <button onclick="openScreen('garage')">
-    GARAGE
-   </button>
-
-  </div>
-
- </div>
+<div class="panel">
+<span class="badge">CITY 3D ONLINE</span>
+<span class="badge">AI CORE READY</span>
+<span class="badge">WEB ACCESS</span>
+<span class="badge">WEBXR READY</span>
+</div>
 
 </section>
 
-<!-- PROFILE -->
-<section id="profile" class="screen panelScreen">
 
- <button class="back" onclick="backGrid()">← GRID</button>
+<section id="profile" class="view">
 
- <div class="panel profile">
+<div class="panel">
 
-  <h1>IDENTITY</h1>
+<h2>IDENTITY DISC</h2>
 
-  <div class="disc"></div>
+<div id="disc">
+<span>SAM</span>
+</div>
 
-  <h2>IDENTITY DISC</h2>
-
-  <p>
-   SAM // GRID IDENTITY<br>
-   USER STATUS: ACTIVE
-  </p>
-
-  <div class="bar">
-   <i style="width:94%"></i>
-  </div>
-
-  <p>IDENTITY CORE · 94%</p>
-
- </div>
-
-</section>
-
-<!-- CITY INFO -->
-<section id="city" class="screen panelScreen">
-
- <button class="back" onclick="backGrid()">← GRID</button>
-
- <div class="panel">
-
-  <h1>NEON CITY</h1>
-
-  <p>
-   La ciudad digital se encuentra activa.
-   Los sectores de la GRID están conectados
-   mediante rutas de energía y corredores de tránsito.
-  </p>
-
-  <div class="cityCard">
-
-   <div>
-    <b>124</b>
-    <small>SECTORS</small>
-   </div>
-
-   <div>
-    <b>87%</b>
-    <small>ONLINE</small>
-   </div>
-
-   <div>
-    <b>03</b>
-    <small>VEHICLES</small>
-   </div>
-
-  </div>
-
-  <div class="bar">
-   <i style="width:87%"></i>
-  </div>
-
-  <p>GRID CITY NETWORK · 87%</p>
-
- </div>
-
-</section>
-
-<!-- GARAGE -->
-<section id="garage" class="screen panelScreen">
-
- <button class="back" onclick="backGrid()">← GRID</button>
-
- <div class="panel">
-
-  <h1>GARAGE</h1>
-
-  <p>
-   Hangar digital de vehículos.
-   Selecciona una unidad para acceder a sus datos.
-  </p>
-
-  <div class="cityCard">
-
-   <div onclick="vehicle('Gixxer SF250')">
-    <b>01</b>
-    <small>GIXXER SF250</small>
-   </div>
-
-   <div onclick="vehicle('CR5 200')">
-    <b>02</b>
-    <small>CR5 200</small>
-   </div>
-
-   <div onclick="vehicle('GSXR 150')">
-    <b>03</b>
-    <small>GSXR 150</small>
-   </div>
-
-  </div>
-
-  <div id="vehicleData"></div>
-
- </div>
-
-</section>
-
-<!-- AI -->
-<section id="ai" class="screen panelScreen">
-
- <button class="back" onclick="backGrid()">← GRID</button>
-
- <div class="panel">
-
-  <h1>AI CORE</h1>
-
-  <p>
-   Núcleo de inteligencia artificial reservado
-   para el futuro asistente de la GRID.
-  </p>
-
-  <div class="bar">
-   <i style="width:96%"></i>
-  </div>
-
-  <p>NEURAL CORE · 96%</p>
-
-  <button onclick="aiMessage()" style="padding:14px 22px;letter-spacing:3px">
-   INITIALIZE
-  </button>
-
-  <p id="aiOutput"></p>
-
- </div>
-
-</section>
-
-<!-- ARCHIVE -->
-<section id="archive" class="screen panelScreen">
-
- <button class="back" onclick="backGrid()">← GRID</button>
-
- <div class="panel">
-
-  <h1>ARCHIVE</h1>
-
-  <p>
-   Centro de almacenamiento para proyectos,
-   imágenes, documentos y registros de la GRID.
-  </p>
-
-  <div class="bar">
-   <i style="width:63%"></i>
-  </div>
-
-  <p>ARCHIVE STORAGE · 63%</p>
-
- </div>
-
-</section>
-
-<!-- SYSTEM -->
-<section id="system" class="screen panelScreen">
-
- <button class="back" onclick="backGrid()">← GRID</button>
-
- <div class="panel">
-
-  <h1>SYSTEM</h1>
-
-  <p>
-   GRID CORE ONLINE.
-   Interfaz preparada para futuras funciones,
-   sonido, comandos y módulos.
-  </p>
-
-  <div class="bar">
-   <i style="width:100%"></i>
-  </div>
-
-  <p>SYSTEM STATUS · 100%</p>
-
-  <p id="fps">FPS · --</p>
-
- </div>
-
-</section>
-
-<!-- LIGHTCYCLE -->
-<section id="game" class="screen">
-
- <canvas id="gameCanvas"></canvas>
-
- <div class="gameHUD">
-  <div class="score">
-   SCORE <span id="score">0</span>
-  </div>
-
-  <div>
-   LIGHTCYCLE // <span id="speed">1.0</span>X
-  </div>
- </div>
-
- <button class="back" onclick="exitGame()">← EXIT</button>
-
- <div class="gameHelp">
-  DESLIZA / USA LAS FLECHAS PARA GIRAR
- </div>
-
- <div class="gameControls">
-
-  <button id="up">▲</button>
-  <button id="left">◀</button>
-  <button id="down">▼</button>
-  <button id="right">▶</button>
-
- </div>
-
-</section>
-
-<!-- NAV -->
-<nav class="nav">
-
- <button onclick="openScreen('profile')">
-  <div class="icon">◉</div>
-  <span>PERFIL</span>
- </button>
-
- <button onclick="openScreen('garage')">
-  <div class="icon">◇</div>
-  <span>GARAGE</span>
- </button>
-
- <button onclick="openScreen('ai')">
-  <div class="icon">◈</div>
-  <span>AI</span>
- </button>
-
- <button onclick="openScreen('archive')">
-  <div class="icon">▣</div>
-  <span>ARCHIVE</span>
- </button>
-
- <button onclick="openScreen('system')">
-  <div class="icon">⚙</div>
-  <span>SYSTEM</span>
- </button>
-
-</nav>
-
-<div class="scanlines"></div>
-<div class="vignette"></div>
+<p class="small" style="text-align:center">
+Identidad digital GRID.
+</p>
 
 </div>
 
+</section>
+
+
+<section id="garage" class="view">
+
+<div class="panel">
+
+<h2>GARAGE</h2>
+
+<p class="small">
+Hangar digital para vehículos, motos, diseños y futuros modelos 3D.
+</p>
+
+<div class="panel">
+
+<h2>LIGHT CYCLE</h2>
+
+<p class="small">
+Mini juego funcional de motos digitales.
+</p>
+
+<button class="action" onclick="show('game')">
+INICIAR JUEGO
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="ai" class="view">
+
+<div class="panel">
+
+<h2>JARVIS // GRID AI</h2>
+
+<p class="small">
+Asistente de voz y texto.
+Puede consultar información pública de Internet.
+Para conectar una IA generativa completa se puede utilizar un backend seguro.
+</p>
+
+<div id="chat">
+
+<div id="messages">
+
+<div class="msg">
+<b>GRID AI:</b>
+Sistema listo. Pregúntame algo.
+</div>
+
+</div>
+
+<div id="chatbar">
+
+<input
+id="prompt"
+placeholder="Escribe una pregunta..."
+>
+
+<button id="mic" class="action">
+🎙
+</button>
+
+<button id="send" class="action">
+ENVIAR
+</button>
+
+</div>
+
+</div>
+
+<div style="margin-top:12px">
+
+<input
+id="endpoint"
+style="width:100%;padding:12px;background:#020b10;border:1px solid #0b5968;color:#d8fbff"
+placeholder="Endpoint IA opcional: https://tu-servidor.com/api/chat"
+>
+
+<p class="small">
+No pongas una API key secreta dentro de GitHub Pages.
+El endpoint debe aceptar POST JSON:
+{message:"..."}
+y devolver:
+{reply:"..."}
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="game" class="view">
+
+<div class="panel">
+
+<h2>LIGHT CYCLE</h2>
+
+<div id="gameWrap">
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="gameUI">
+
+<span id="score">
+SCORE 0
+</span>
+
+<span>
+LIGHTCYCLE // GRID
+</span>
+
+</div>
+
+</div>
+
+<div class="controls">
+
+<button id="left">
+◀
+</button>
+
+<button id="boost">
+BOOST
+</button>
+
+<button id="right">
+▶
+</button>
+
+</div>
+
+<p class="small">
+Control táctil izquierda/derecha.
+También puedes utilizar las flechas del teclado.
+Evita las paredes y tu propia estela.
+</p>
+
+<button class="action" id="restart">
+REINICIAR
+</button>
+
+</div>
+
+</section>
+
+
+<section id="archive" class="view">
+
+<div class="panel">
+
+<h2>ARCHIVE</h2>
+
+<p class="small">
+Centro de almacenamiento de la GRID.
+Esta arquitectura podrá guardar posteriormente proyectos,
+configuraciones, memoria y entidades digitales.
+</p>
+
+<span class="badge">
+LOCAL STORAGE
+</span>
+
+<span class="badge">
+PROJECTS
+</span>
+
+<span class="badge">
+MEMORY
+</span>
+
+</div>
+
+</section>
+
+
+<section id="vr" class="view">
+
+<div class="panel">
+
+<h2>GRID VR / CITY</h2>
+
+<p class="small">
+Prototipo WebXR.
+En un dispositivo compatible con WebXR y un visor conectado,
+el sistema intentará iniciar una sesión inmersiva.
+</p>
+
+<canvas id="vrCanvas"></canvas>
+
+<br><br>
+
+<button class="action" id="enterVR">
+ENTRAR EN REALIDAD VIRTUAL
+</button>
+
+<p id="vrStatus" class="small">
+Comprobando soporte...
+</p>
+
+</div>
+
+
+<div class="panel">
+
+<h2>FUTURO DE LA GRID</h2>
+
+<p class="small">
+La arquitectura está preparada para evolucionar hacia una ciudad 3D
+con avatares de IA, memoria, voz, agentes autónomos, habitaciones
+compartidas y realidad virtual.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="system" class="view">
+
+<div class="panel">
+
+<h2>SYSTEM</h2>
+
+<p class="small">
+GRID CORE ONLINE.
+</p>
+
+<div class="badge">
+RENDER ENGINE: CANVAS
+</div>
+
+<div class="badge">
+AI: HYBRID
+</div>
+
+<div class="badge">
+NETWORK: HTTPS
+</div>
+
+<div class="badge">
+VR: WEBXR
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<nav class="nav">
+
+<button onclick="show('profile')">
+◉<br>PERFIL
+</button>
+
+<button onclick="show('garage')">
+◇<br>GARAGE
+</button>
+
+<button onclick="show('ai')">
+◈<br>AI
+</button>
+
+<button onclick="show('archive')">
+□<br>ARCHIVE
+</button>
+
+<button onclick="show('system')">
+⚙<br>SYSTEM
+</button>
+
+</nav>
+
+</div>
+
+
 <script>
 
-/* =====================================================
-   GRID NAVIGATION
-===================================================== */
-
-const screens=document.querySelectorAll(".screen");
+const views=[...document.querySelectorAll('.view')];
 
 function show(id){
- screens.forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
+
+views.forEach(v=>{
+v.classList.toggle('active',v.id===id);
+});
+
+if(id==='game'){
+gameResize();
 }
 
-function enterGrid(){
- show("grid");
- initCity();
+if(id==='vr'){
+drawVR();
 }
 
-function openScreen(id){
- show(id);
 }
 
-function backGrid(){
- show("grid");
- initCity();
+
+const messages=document.getElementById('messages');
+const prompt=document.getElementById('prompt');
+const endpoint=document.getElementById('endpoint');
+
+
+function escapeHtml(s){
+
+return String(s).replace(/[&<>"']/g,m=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+
+}[m]));
+
 }
 
-/* =====================================================
-   GARAGE
-===================================================== */
 
-function vehicle(name){
+function addMsg(who,text,cls=''){
 
- const box=document.getElementById("vehicleData");
+const d=document.createElement('div');
 
- box.innerHTML=`
- <div style="
- margin-top:25px;
- padding:22px;
- border:1px solid rgba(0,220,255,.3);
- background:rgba(0,20,28,.45)">
- <h2 style="
- color:#2ee8ff;
- letter-spacing:4px">${name}</h2>
+d.className='msg '+cls;
 
- <p>
- STATUS: ONLINE<br>
- ENERGY: 100%<br>
- SYSTEM: GRID READY
- </p>
+d.innerHTML=
+'<b>'+who+':</b> '+
+escapeHtml(text).replace(/\n/g,'<br>');
 
- <div class="bar">
-  <i style="width:100%"></i>
- </div>
- </div>`;
+messages.appendChild(d);
+
+messages.scrollTop=messages.scrollHeight;
+
 }
 
-/* =====================================================
-   AI
-===================================================== */
 
-function aiMessage(){
+async function wiki(q){
 
- const out=document.getElementById("aiOutput");
+const url=
+'https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch='+
+encodeURIComponent(q)+
+'&srlimit=3&format=json&origin=*';
 
- const messages=[
-  "GRID CORE INITIALIZED.",
-  "NEURAL SYSTEM ONLINE.",
-  "WELCOME BACK, SAM.",
-  "ALL SYSTEMS NOMINAL."
- ];
+const r=await fetch(url);
 
- let i=0;
- out.textContent="";
-
- const timer=setInterval(()=>{
-
-  out.textContent+=messages[i]+" ";
-
-  i++;
-
-  if(i>=messages.length)
-   clearInterval(timer);
-
- },500);
+if(!r.ok){
+throw new Error('web');
 }
 
-/* =====================================================
-   3D CITY
-===================================================== */
+const j=await r.json();
 
-const cityCanvas=document.getElementById("cityCanvas");
-const ctx=cityCanvas.getContext("2d");
-
-let cityAnimation;
-
-function resizeCity(){
-
- cityCanvas.width=innerWidth*devicePixelRatio;
- cityCanvas.height=innerHeight*devicePixelRatio;
-
- cityCanvas.style.width=innerWidth+"px";
- cityCanvas.style.height=innerHeight+"px";
-
- ctx.setTransform(
-  devicePixelRatio,0,0,devicePixelRatio,0,0
- );
+if(!j.query?.search?.length){
+return null;
 }
 
-window.addEventListener("resize",resizeCity);
-resizeCity();
+return j.query.search.map(x=>
+x.title+
+': '+
+x.snippet.replace(/<[^>]+>/g,'')
+).join('\n');
 
-const buildings=[];
-
-function makeBuildings(){
-
- buildings.length=0;
-
- for(let i=0;i<80;i++){
-
-  buildings.push({
-
-   x:(Math.random()*2-1)*1.7,
-
-   z:Math.random()*1,
-
-   w:.08+Math.random()*.18,
-
-   h:.12+Math.random()*.65,
-
-   seed:Math.random()*1000
-
-  });
-
- }
 }
 
-function project(x,z){
 
- const horizon=innerHeight*.45;
+async function ask(){
 
- const depth=.25+z*.95;
+const q=prompt.value.trim();
 
- return {
-  x:innerWidth/2+x*innerWidth/depth,
-  y:horizon+(z*innerHeight*.55),
-  scale:1/depth
- };
+if(!q){
+return;
 }
 
-function drawBuilding(b){
+prompt.value='';
 
- const p=project(b.x,b.z);
+addMsg('TÚ',q,'user');
 
- const width=b.w*innerWidth*p.scale;
- const height=b.h*innerHeight*p.scale;
+addMsg('GRID AI','Procesando...');
 
- const x=p.x-width/2;
- const y=p.y-height;
+const last=messages.lastElementChild;
 
- ctx.strokeStyle="rgba(0,205,255,.25)";
- ctx.lineWidth=1;
+try{
 
- ctx.fillStyle="rgba(1,16,23,.85)";
+const ep=endpoint.value.trim();
 
- ctx.fillRect(x,y,width,height);
- ctx.strokeRect(x,y,width,height);
+if(ep){
 
- const rows=Math.max(2,Math.floor(height/16));
- const cols=Math.max(1,Math.floor(width/14));
+const r=await fetch(ep,{
+method:'POST',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+message:q
+})
+});
 
- for(let r=0;r<rows;r++){
-
-  for(let c=0;c<cols;c++){
-
-   const on=((Math.floor(b.seed+r*7+c*3))%5)!==0;
-
-   if(!on) continue;
-
-   const wx=x+5+c*(width/cols);
-   const wy=y+7+r*(height/rows);
-
-   ctx.fillStyle="rgba(0,220,255,.45)";
-
-   ctx.fillRect(
-    wx,
-    wy,
-    Math.max(1,width/cols*.28),
-    Math.max(1,height/rows*.18)
-   );
-  }
- }
+if(!r.ok){
+throw new Error('endpoint');
 }
 
-function drawCity(){
+const j=await r.json();
 
- ctx.clearRect(0,0,innerWidth,innerHeight);
+last.innerHTML=
+'<b>GRID AI:</b> '+
+escapeHtml(j.reply||j.message||'Sin respuesta.');
 
- const grad=ctx.createRadialGradient(
-  innerWidth/2,
-  innerHeight*.48,
-  10,
-  innerWidth/2,
-  innerHeight*.48,
-  innerHeight*.65
- );
+return;
 
- grad.addColorStop(0,"rgba(0,120,170,.15)");
- grad.addColorStop(1,"rgba(0,0,0,0)");
-
- ctx.fillStyle=grad;
- ctx.fillRect(0,0,innerWidth,innerHeight);
-
- buildings
- .sort((a,b)=>b.z-a.z)
- .forEach(drawBuilding);
-
- /* central tower */
-
- const towerW=innerWidth*.09;
- const towerH=innerHeight*.43;
- const towerX=innerWidth/2-towerW/2;
- const towerY=innerHeight*.45-towerH;
-
- ctx.fillStyle="rgba(0,18,26,.95)";
- ctx.strokeStyle="rgba(0,220,255,.5)";
-
- ctx.fillRect(
-  towerX,
-  towerY,
-  towerW,
-  towerH
- );
-
- ctx.strokeRect(
-  towerX,
-  towerY,
-  towerW,
-  towerH
- );
-
- ctx.fillStyle="#20dff8";
-
- for(let y=towerY+20;y<towerY+towerH;y+=25){
-
-  ctx.fillRect(
-   towerX+8,
-   y,
-   towerW-16,
-   2
-  );
-
- }
-
- /* horizon */
-
- ctx.strokeStyle="rgba(0,220,255,.35)";
- ctx.beginPath();
-
- ctx.moveTo(0,innerHeight*.45);
- ctx.lineTo(innerWidth,innerHeight*.45);
-
- ctx.stroke();
-
- cityAnimation=requestAnimationFrame(drawCity);
 }
 
-function initCity(){
 
- if(cityAnimation)
-  cancelAnimationFrame(cityAnimation);
+const info=await wiki(q);
 
- makeBuildings();
- drawCity();
+last.innerHTML=
+'<b>GRID AI:</b> '+
+escapeHtml(
+info
+?
+'He consultado Internet (Wikipedia):\n'+info
+:
+'No encontré información en Wikipedia. Para respuestas generativas completas conecta un endpoint IA seguro.'
+);
+
+}
+catch(e){
+
+last.innerHTML=
+'<b>GRID AI:</b> '+
+'No pude acceder al servicio web ahora. Comprueba tu conexión.';
+
 }
 
-/* =====================================================
-   LIGHTCYCLE GAME
-===================================================== */
+}
 
-const gameCanvas=document.getElementById("gameCanvas");
-const g=gameCanvas.getContext("2d");
 
-let gameRunning=false;
-let gameLoopId;
+document.getElementById('send').onclick=ask;
 
-let score=0;
-let speed=1;
+prompt.addEventListener('keydown',e=>{
 
-let player;
-let enemy;
+if(e.key==='Enter'){
+ask();
+}
+
+});
+
+
+const SR=
+window.SpeechRecognition||
+window.webkitSpeechRecognition;
+
+
+if(SR){
+
+const rec=new SR();
+
+rec.lang='es-CO';
+
+rec.onresult=e=>{
+
+prompt.value=
+e.results[0][0].transcript;
+
+ask();
+
+};
+
+document.getElementById('mic').onclick=()=>rec.start();
+
+}
+else{
+
+document.getElementById('mic').disabled=true;
+
+}
+
+
+/* ==============================
+LIGHT CYCLE
+============================== */
+
+const canvas=document.getElementById('gameCanvas');
+
+const ctx=canvas.getContext('2d');
+
+let W=0;
+let H=0;
+let cell=12;
 
 let trail=[];
-let enemyTrail=[];
+let player;
 
-const directions=[
- {x:0,y:-1},
- {x:1,y:0},
- {x:0,y:1},
- {x:-1,y:0}
-];
+let dir={
+x:1,
+y:0
+};
 
-let dir=0;
-let enemyDir=2;
+let turnQueue=[];
 
-function resizeGame(){
+let running=false;
+let score=0;
+let speed=90;
+let loop;
 
- gameCanvas.width=innerWidth*devicePixelRatio;
- gameCanvas.height=innerHeight*devicePixelRatio;
 
- gameCanvas.style.width=innerWidth+"px";
- gameCanvas.style.height=innerHeight+"px";
+function gameResize(){
 
- g.setTransform(
-  devicePixelRatio,0,0,devicePixelRatio,0,0
- );
+W=canvas.clientWidth;
+
+H=canvas.clientHeight;
+
+canvas.width=W*devicePixelRatio;
+
+canvas.height=H*devicePixelRatio;
+
+ctx.setTransform(
+devicePixelRatio,
+0,
+0,
+devicePixelRatio,
+0,
+0
+);
+
 }
 
-window.addEventListener("resize",resizeGame);
-resizeGame();
 
 function startGame(){
 
- show("game");
+gameResize();
 
- resizeGame();
+cell=
+Math.max(
+9,
+Math.floor(
+Math.min(W,H)/45
+)
+);
 
- score=0;
- speed=1;
+player={
+x:
+Math.floor(W/2/cell)*cell,
 
- document.getElementById("score").textContent=score;
- document.getElementById("speed").textContent=speed.toFixed(1);
+y:
+Math.floor(H/2/cell)*cell
+};
 
- player={
-  x:innerWidth*.28,
-  y:innerHeight*.72
- };
+dir={
+x:1,
+y:0
+};
 
- enemy={
-  x:innerWidth*.72,
-  y:innerHeight*.28
- };
+turnQueue=[];
 
- dir=0;
- enemyDir=2;
+trail=[];
 
- trail=[];
- enemyTrail=[];
+score=0;
 
- gameRunning=true;
+speed=90;
 
- if(gameLoopId)
-  cancelAnimationFrame(gameLoopId);
+running=true;
 
- gameLoopId=requestAnimationFrame(gameFrame);
+clearInterval(loop);
+
+loop=setInterval(
+tick,
+speed
+);
+
+drawGame();
+
 }
 
-function exitGame(){
 
- gameRunning=false;
+function turn(side){
 
- if(gameLoopId)
-  cancelAnimationFrame(gameLoopId);
-
- show("grid");
- initCity();
+if(!running){
+return;
 }
 
-function turnLeft(){
- dir=(dir+3)%4;
+const d=dir;
+
+let nd;
+
+if(side==='left'){
+
+nd={
+x:d.y,
+y:-d.x
+};
+
+}
+else{
+
+nd={
+x:-d.y,
+y:d.x
+};
+
 }
 
-function turnRight(){
- dir=(dir+1)%4;
+if(
+trail.length &&
+nd.x===-d.x &&
+nd.y===-d.y
+){
+return;
 }
 
-function movePoint(p,d,s){
+turnQueue.push(nd);
 
- p.x+=directions[d].x*s;
- p.y+=directions[d].y*s;
 }
 
-function hitWall(p){
 
- return (
-  p.x<5 ||
-  p.x>innerWidth-5 ||
-  p.y<75 ||
-  p.y>innerHeight-100
- );
+function tick(){
+
+if(turnQueue.length){
+
+dir=turnQueue.shift();
+
 }
 
-function hitTrail(p,t){
+trail.push({
+x:player.x,
+y:player.y
+});
 
- for(let i=0;i<t.length;i+=2){
+player.x+=dir.x*cell;
 
-  const q=t[i];
+player.y+=dir.y*cell;
 
-  if(
-   Math.abs(p.x-q.x)<8 &&
-   Math.abs(p.y-q.y)<8
-  )
-   return true;
- }
+score++;
 
- return false;
+
+const hit=
+
+player.x<0||
+player.y<0||
+player.x>=W||
+player.y>=H||
+trail.some(
+p=>
+p.x===player.x&&
+p.y===player.y
+);
+
+
+if(hit){
+
+endGame();
+
+return;
+
 }
 
-function gameFrame(){
 
- if(!gameRunning)
-  return;
+if(score%100===0){
 
- const step=3.2*speed;
+speed=
+Math.max(
+42,
+speed-4
+);
 
- trail.push({
-  x:player.x,
-  y:player.y
- });
+clearInterval(loop);
 
- enemyTrail.push({
-  x:enemy.x,
-  y:enemy.y
- });
+loop=setInterval(
+tick,
+speed
+);
 
- movePoint(player,dir,step);
- movePoint(enemy,enemyDir,step*.85);
-
- /* enemy AI */
-
- if(Math.random()<.018){
-
-  const options=[
-   (enemyDir+1)%4,
-   (enemyDir+3)%4
-  ];
-
-  const candidate=options[
-   Math.floor(Math.random()*2)
-  ];
-
-  enemyDir=candidate;
- }
-
- /* enemy tries avoiding walls */
-
- if(
-  enemy.x<80 ||
-  enemy.x>innerWidth-80 ||
-  enemy.y<140 ||
-  enemy.y>innerHeight-160
- ){
-  enemyDir=(enemyDir+2)%4;
- }
-
- if(
-  hitWall(player) ||
-  hitTrail(player,trail) ||
-  hitTrail(player,enemyTrail)
- ){
-  gameOver(false);
-  return;
- }
-
- if(
-  hitWall(enemy) ||
-  hitTrail(enemy,trail)
- ){
-  score+=100;
-  enemy={
-   x:Math.random()>.5?innerWidth*.75:innerWidth*.25,
-   y:Math.random()>.5?innerHeight*.25:innerHeight*.7
-  };
-
-  enemyTrail=[];
- }
-
- score++;
-
- if(score%800===0){
-
-  speed+=.1;
-
-  document.getElementById("speed")
-  .textContent=speed.toFixed(1);
- }
-
- document.getElementById("score")
- .textContent=score;
-
- drawGame();
-
- gameLoopId=requestAnimationFrame(gameFrame);
 }
 
-function neonLine(points,color,width){
 
- if(points.length<2)
-  return;
+document.getElementById('score')
+.textContent='SCORE '+score;
 
- g.beginPath();
+drawGame();
 
- g.moveTo(
-  points[0].x,
-  points[0].y
- );
-
- for(let i=1;i<points.length;i++){
-
-  g.lineTo(
-   points[i].x,
-   points[i].y
-  );
- }
-
- g.strokeStyle=color;
- g.lineWidth=width;
- g.shadowBlur=18;
- g.shadowColor=color;
- g.stroke();
-
- g.shadowBlur=0;
 }
+
 
 function drawGame(){
 
- g.fillStyle="#010508";
- g.fillRect(0,0,innerWidth,innerHeight);
+ctx.fillStyle='#01080d';
 
- /* grid */
+ctx.fillRect(
+0,
+0,
+W,
+H
+);
 
- g.strokeStyle="rgba(0,180,220,.08)";
- g.lineWidth=1;
 
- for(let x=0;x<innerWidth;x+=40){
+ctx.strokeStyle=
+'rgba(0,210,255,.08)';
 
-  g.beginPath();
-  g.moveTo(x,0);
-  g.lineTo(x,innerHeight);
-  g.stroke();
- }
+ctx.lineWidth=1;
 
- for(let y=70;y<innerHeight;y+=40){
 
-  g.beginPath();
-  g.moveTo(0,y);
-  g.lineTo(innerWidth,y);
-  g.stroke();
- }
+for(
+let x=0;
+x<W;
+x+=cell*4
+){
 
- neonLine(
-  trail,
-  "#00eaff",
-  3
- );
+ctx.beginPath();
 
- neonLine(
-  enemyTrail,
-  "#ff245d",
-  3
- );
+ctx.moveTo(x,0);
 
- drawBike(
-  player,
-  "#00eaff",
-  dir
- );
+ctx.lineTo(x,H);
 
- drawBike(
-  enemy,
-  "#ff245d",
-  enemyDir
- );
+ctx.stroke();
+
 }
 
-function drawBike(p,color,d){
 
- g.save();
+for(
+let y=0;
+y<H;
+y+=cell*4
+){
 
- g.translate(p.x,p.y);
+ctx.beginPath();
 
- g.rotate(
-  d===0?0:
-  d===1?Math.PI/2:
-  d===2?Math.PI:
-  -Math.PI/2
- );
+ctx.moveTo(0,y);
 
- g.shadowBlur=25;
- g.shadowColor=color;
+ctx.lineTo(W,y);
 
- g.strokeStyle=color;
- g.lineWidth=3;
+ctx.stroke();
 
- g.beginPath();
- g.moveTo(-18,0);
- g.lineTo(18,0);
- g.stroke();
-
- g.fillStyle=color;
-
- g.fillRect(-12,-4,24,8);
-
- g.fillStyle="#02070b";
-
- g.fillRect(-4,-3,8,6);
-
- g.restore();
 }
 
-function gameOver(win){
 
- gameRunning=false;
+ctx.strokeStyle='#13e8ff';
 
- setTimeout(()=>{
+ctx.shadowBlur=12;
 
-  const message=win?
-   "LIGHTCYCLE VICTORY":
-   "LIGHTCYCLE TERMINATED";
+ctx.shadowColor='#13e8ff';
 
-  if(confirm(
-   message+
-   "\\n\\nSCORE: "+
-   score+
-   "\\n\\n¿Jugar nuevamente?"
-  )){
-   startGame();
-  }else{
-   exitGame();
-  }
+ctx.lineWidth=3;
 
- },100);
+ctx.beginPath();
+
+
+trail.forEach(
+(p,i)=>{
+
+if(i){
+
+ctx.lineTo(
+p.x+cell/2,
+p.y+cell/2
+);
+
+}
+else{
+
+ctx.moveTo(
+p.x+cell/2,
+p.y+cell/2
+);
+
 }
 
-/* =====================================================
-   CONTROLS
-===================================================== */
+}
+);
 
-document.getElementById("left")
- .addEventListener("pointerdown",turnLeft);
+ctx.stroke();
 
-document.getElementById("right")
- .addEventListener("pointerdown",turnRight);
 
-document.getElementById("up")
- .addEventListener("pointerdown",()=>{
-  /* accelerate */
-  speed=Math.min(2.5,speed+.1);
- });
+ctx.fillStyle='#fff';
 
-document.getElementById("down")
- .addEventListener("pointerdown",()=>{
-  speed=Math.max(.7,speed-.1);
- });
+ctx.shadowBlur=20;
 
-window.addEventListener("keydown",e=>{
+ctx.shadowColor='#fff';
 
- if(!gameRunning)
-  return;
+ctx.fillRect(
+player.x,
+player.y,
+cell,
+cell
+);
 
- if(e.key==="ArrowLeft")
-  turnLeft();
+ctx.shadowBlur=0;
 
- if(e.key==="ArrowRight")
-  turnRight();
-
- if(e.key==="ArrowUp")
-  speed=Math.min(2.5,speed+.1);
-
- if(e.key==="ArrowDown")
-  speed=Math.max(.7,speed-.1);
-});
-
-/* swipe */
-
-let touchStartX=0;
-let touchStartY=0;
-
-window.addEventListener("touchstart",e=>{
-
- if(!gameRunning)
-  return;
-
- const t=e.touches[0];
-
- touchStartX=t.clientX;
- touchStartY=t.clientY;
-
-},{passive:true});
-
-window.addEventListener("touchend",e=>{
-
- if(!gameRunning)
-  return;
-
- const t=e.changedTouches[0];
-
- const dx=t.clientX-touchStartX;
- const dy=t.clientY-touchStartY;
-
- if(Math.abs(dx)<25 && Math.abs(dy)<25)
-  return;
-
- if(Math.abs(dx)>Math.abs(dy)){
-
-  if(dx>0)
-   turnRight();
-  else
-   turnLeft();
-
- }else{
-
-  if(dy<0)
-   speed=Math.min(2.5,speed+.1);
-  else
-   speed=Math.max(.7,speed-.1);
-
- }
-
-},{passive:true});
-
-/* =====================================================
-   FPS
-===================================================== */
-
-let fcount=0;
-let ftime=performance.now();
-
-function fpsTick(now){
-
- fcount++;
-
- if(now-ftime>1000){
-
-  const el=document.getElementById("fps");
-
-  if(el)
-   el.textContent="FPS · "+fcount;
-
-  fcount=0;
-  ftime=now;
- }
-
- requestAnimationFrame(fpsTick);
 }
 
-requestAnimationFrame(fpsTick);
 
-/* =====================================================
-   START
-===================================================== */
+function endGame(){
 
-show("home");
+running=false;
+
+clearInterval(loop);
+
+document.getElementById('score')
+.textContent=
+'GAME OVER // '+score;
+
+}
+
+
+document.getElementById('left')
+.onclick=()=>{
+turn('left');
+};
+
+
+document.getElementById('right')
+.onclick=()=>{
+turn('right');
+};
+
+
+document.getElementById('left')
+.ontouchstart=e=>{
+e.preventDefault();
+turn('left');
+};
+
+
+document.getElementById('right')
+.ontouchstart=e=>{
+e.preventDefault();
+turn('right');
+};
+
+
+document.getElementById('boost')
+.onclick=()=>{
+
+if(running){
+
+score+=10;
+
+document.getElementById('score')
+.textContent=
+'SCORE '+score;
+
+}
+
+};
+
+
+document.getElementById('restart')
+.onclick=startGame;
+
+
+window.addEventListener(
+'keydown',
+e=>{
+
+if(
+e.key==='ArrowLeft'||
+e.key==='a'
+){
+
+turn('left');
+
+}
+
+if(
+e.key==='ArrowRight'||
+e.key==='d'
+){
+
+turn('right');
+
+}
+
+if(
+e.key===' '&&
+running
+){
+
+score+=10;
+
+}
+
+}
+);
+
+
+startGame();
+
+
+/* ==============================
+VR GRID
+============================== */
+
+const vrc=
+document.getElementById('vrCanvas');
+
+const vctx=
+vrc.getContext('2d');
+
+
+function drawVR(){
+
+vrc.width=
+vrc.clientWidth*
+devicePixelRatio;
+
+vrc.height=
+vrc.clientHeight*
+devicePixelRatio;
+
+vctx.setTransform(
+devicePixelRatio,
+0,
+0,
+devicePixelRatio,
+0,
+0
+);
+
+let w=vrc.clientWidth;
+
+let h=vrc.clientHeight;
+
+
+vctx.fillStyle='#01080d';
+
+vctx.fillRect(
+0,
+0,
+w,
+h
+);
+
+
+vctx.strokeStyle=
+'rgba(0,220,255,.2)';
+
+
+for(
+let x=0;
+x<w;
+x+=28
+){
+
+vctx.beginPath();
+
+vctx.moveTo(
+w/2+(x-w/2)*.15,
+h*.55
+);
+
+vctx.lineTo(
+x,
+h
+);
+
+vctx.stroke();
+
+}
+
+
+for(
+let y=h*.55;
+y<h;
+y+=20
+){
+
+vctx.beginPath();
+
+vctx.moveTo(
+0,
+y
+);
+
+vctx.lineTo(
+w,
+y
+);
+
+vctx.stroke();
+
+}
+
+
+for(
+let i=0;
+i<14;
+i++
+){
+
+let x=
+20+i*(w/14);
+
+let hh=
+30+Math.random()*100;
+
+vctx.strokeStyle='#11ddff';
+
+vctx.strokeRect(
+x,
+h*.55-hh,
+25,
+hh
+);
+
+}
+
+}
+
+
+drawVR();
+
+
+if(
+navigator.xr?.isSessionSupported
+){
+
+navigator.xr
+.isSessionSupported('immersive-vr')
+.then(ok=>{
+
+document.getElementById('vrStatus')
+.textContent=
+ok
+?
+'WebXR inmersivo disponible.'
+:
+'WebXR inmersivo no disponible en este dispositivo.';
+
+})
+.catch(()=>{});
+
+}
+else{
+
+document.getElementById('vrStatus')
+.textContent=
+'Este navegador no expone WebXR. Usa un navegador/visor compatible.';
+
+}
+
+
+document.getElementById('enterVR')
+.onclick=async()=>{
+
+try{
+
+if(!navigator.xr){
+throw 0;
+}
+
+const s=
+await navigator.xr.requestSession(
+'immersive-vr'
+);
+
+document.getElementById('vrStatus')
+.textContent=
+'Sesión VR iniciada.';
+
+s.addEventListener(
+'end',
+()=>{
+
+document.getElementById('vrStatus')
+.textContent=
+'Sesión VR finalizada.';
+
+}
+);
+
+}
+catch(e){
+
+document.getElementById('vrStatus')
+.textContent=
+'No se pudo iniciar VR en este dispositivo.';
+
+}
+
+};
+
+
+window.addEventListener(
+'resize',
+()=>{
+
+gameResize();
+
+drawVR();
+
+}
+);
 
 </script>
 
