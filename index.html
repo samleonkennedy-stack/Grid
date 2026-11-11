@@ -1,445 +1,523 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#02060b">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#02070b">
 <title>GRID // SAM</title>
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 html,body{
-margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
-background:#02060b;
-color:#d8fbff;
-font-family:Arial,sans-serif;
+ margin:0;
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ background:#02070b;
+ color:#b9f7ff;
+ font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-background:
-radial-gradient(circle at 50% 45%,rgba(0,180,255,.14),transparent 32%),
-#02060b;
+ background:
+ radial-gradient(circle at 50% 45%,rgba(0,220,255,.10),transparent 35%),
+ linear-gradient(rgba(0,190,255,.045) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,190,255,.045) 1px,transparent 1px),
+ #02070b;
+ background-size:auto,45px 45px,45px 45px;
 }
 
 button{
-font-family:inherit;
--webkit-tap-highlight-color:transparent;
+ font:inherit;
+ color:inherit;
+ background:rgba(0,20,28,.75);
+ border:1px solid rgba(0,220,255,.45);
+ cursor:pointer;
+}
+
+button:active{
+ transform:scale(.96);
 }
 
 #app{
-position:fixed;
-inset:0;
-overflow:hidden;
+ position:fixed;
+ inset:0;
+ overflow:hidden;
 }
 
-/* GRID */
+/* ================= HEADER ================= */
 
-.grid{
-position:absolute;
-width:180%;
-height:130%;
-left:-40%;
-bottom:-65%;
-transform:perspective(500px) rotateX(62deg);
-background-image:
-linear-gradient(rgba(0,210,255,.15) 1px,transparent 1px),
-linear-gradient(90deg,rgba(0,210,255,.15) 1px,transparent 1px);
-background-size:45px 45px;
-animation:gridMove 5s linear infinite;
-}
-
-@keyframes gridMove{
-from{background-position:0 0,0 0}
-to{background-position:0 45px,45px 0}
-}
-
-.scan{
-position:absolute;
-inset:0;
-pointer-events:none;
-background:repeating-linear-gradient(
-0deg,
-transparent 0px,
-transparent 5px,
-rgba(50,220,255,.025) 6px
-);
-}
-
-.vignette{
-position:absolute;
-inset:0;
-pointer-events:none;
-box-shadow:inset 0 0 130px #000;
-z-index:100;
-}
-
-/* TOP */
-
-.top{
-position:absolute;
-top:18px;
-left:18px;
-right:18px;
-z-index:50;
-display:flex;
-justify-content:space-between;
+.header{
+ position:absolute;
+ z-index:50;
+ top:0;
+ left:0;
+ right:0;
+ height:72px;
+ padding:20px 28px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:linear-gradient(#02070bee,transparent);
+ letter-spacing:6px;
+ font-size:13px;
 }
 
 .logo{
-font-size:11px;
-letter-spacing:4px;
-color:#42eaff;
-text-shadow:0 0 12px #00cfff;
+ color:#28e7ff;
+ text-shadow:0 0 15px #00dfff;
 }
 
 .status{
-font-size:9px;
-letter-spacing:2px;
-color:#648f9c;
+ letter-spacing:3px;
+ font-size:10px;
 }
 
 .status b{
-color:#36eeff;
+ color:#22eaff;
 }
 
-/* SCREENS */
+/* ================= SCREENS ================= */
 
 .screen{
-position:absolute;
-inset:0;
-display:none;
-z-index:10;
+ position:absolute;
+ inset:0;
+ display:none;
+ overflow:hidden;
 }
 
 .screen.active{
-display:block;
+ display:block;
 }
 
-/* PORTAL */
+/* ================= HOME ================= */
 
-.portal{
-position:absolute;
-width:210px;
-height:210px;
-left:50%;
-top:43%;
-transform:translate(-50%,-50%);
-border-radius:50%;
-border:1px solid rgba(50,230,255,.45);
-box-shadow:
-0 0 20px rgba(0,220,255,.25),
-0 0 80px rgba(0,120,255,.15);
+.home{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
 }
 
-.portal:before{
-content:"";
-position:absolute;
-inset:20px;
-border-radius:50%;
-border:1px dashed rgba(40,220,255,.6);
-animation:spin 8s linear infinite;
+.homeCore{
+ width:min(720px,88vw);
+ margin-top:-30px;
 }
 
-.portal:after{
-content:"";
-position:absolute;
-inset:55px;
-border-radius:50%;
-border:1px solid rgba(40,220,255,.65);
-box-shadow:0 0 25px #00cfff55;
-animation:spin 4s linear infinite reverse;
+.kicker{
+ font-size:11px;
+ letter-spacing:7px;
+ color:#5beaff;
+ margin-bottom:20px;
 }
 
-@keyframes spin{
-to{transform:rotate(360deg)}
-}
-
-/* WOLF */
-
-.wolf{
-position:absolute;
-left:50%;
-top:43%;
-transform:translate(-50%,-50%);
-font-size:78px;
-z-index:5;
-filter:
-drop-shadow(0 0 5px #fff)
-drop-shadow(0 0 12px #27eaff)
-drop-shadow(0 0 35px #008cff);
-animation:wolfPulse 2.5s ease-in-out infinite;
-}
-
-@keyframes wolfPulse{
-0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-50%{opacity:.68;transform:translate(-50%,-50%) scale(1.08)}
-}
-
-/* ENTRADA */
-
-.entry{
-position:absolute;
-left:50%;
-top:43%;
-transform:translateX(-50%);
-margin-top:130px;
-text-align:center;
-width:90%;
-}
-
-.enter{
-padding:15px 26px;
-background:rgba(2,18,27,.9);
-border:1px solid #27ddff;
-color:#baf7ff;
-letter-spacing:3px;
-font-size:10px;
-box-shadow:
-0 0 15px #00cfff33,
-inset 0 0 15px #00cfff11;
-}
-
-.enter:active{
-background:#063344;
-box-shadow:0 0 30px #00cfff66;
+.title{
+ font-size:clamp(55px,13vw,120px);
+ letter-spacing:15px;
+ margin:0;
+ color:#d9fbff;
+ text-shadow:
+ 0 0 8px #00d9ff,
+ 0 0 30px #00aaff,
+ 0 0 70px rgba(0,210,255,.7);
 }
 
 .subtitle{
-margin-top:12px;
-font-size:8px;
-letter-spacing:2px;
-color:#51808c;
+ margin-top:15px;
+ letter-spacing:6px;
+ font-size:12px;
+ color:#70a9b5;
 }
 
-/* MAIN */
-
-.mainCenter{
-position:absolute;
-left:50%;
-top:44%;
-transform:translate(-50%,-50%);
-text-align:center;
-width:90%;
+.enter{
+ margin-top:50px;
+ padding:18px 38px;
+ letter-spacing:5px;
+ font-size:12px;
+ box-shadow:
+ inset 0 0 20px rgba(0,220,255,.08),
+ 0 0 25px rgba(0,220,255,.12);
 }
 
-.mainSymbol{
-font-size:72px;
-filter:
-drop-shadow(0 0 8px #36eaff)
-drop-shadow(0 0 35px #008cff);
-animation:wolfPulse 2.5s infinite;
+.enter:hover{
+ box-shadow:
+ inset 0 0 25px rgba(0,220,255,.15),
+ 0 0 35px rgba(0,220,255,.3);
 }
 
-.mainTitle{
-margin-top:20px;
-font-size:18px;
-letter-spacing:6px;
-color:#9df5ff;
-text-shadow:0 0 15px #00cfff;
+/* ================= GRID ================= */
+
+#cityCanvas{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
 }
 
-.mainText{
-margin-top:10px;
-font-size:9px;
-letter-spacing:2px;
-color:#527f8c;
+.gridUI{
+ position:absolute;
+ z-index:20;
+ inset:0;
+ pointer-events:none;
 }
 
-/* NAV */
+.gridTop{
+ position:absolute;
+ top:90px;
+ left:30px;
+ right:30px;
+ display:flex;
+ justify-content:space-between;
+}
+
+.gridTitle{
+ letter-spacing:7px;
+ color:#24e6ff;
+ text-shadow:0 0 12px #00dfff;
+}
+
+.cityInfo{
+ text-align:right;
+ font-size:9px;
+ letter-spacing:3px;
+ color:#5d98a4;
+}
+
+.cityInfo b{
+ color:#22eaff;
+}
+
+.gridCenter{
+ position:absolute;
+ left:50%;
+ top:48%;
+ transform:translate(-50%,-50%);
+ text-align:center;
+}
+
+.cityName{
+ font-size:clamp(28px,8vw,65px);
+ letter-spacing:12px;
+ text-shadow:
+ 0 0 15px #00dfff,
+ 0 0 45px #0077aa;
+}
+
+.citySub{
+ margin-top:15px;
+ font-size:10px;
+ letter-spacing:5px;
+ color:#6999a3;
+}
+
+.gridActions{
+ position:absolute;
+ bottom:125px;
+ left:50%;
+ transform:translateX(-50%);
+ display:flex;
+ gap:10px;
+ pointer-events:auto;
+}
+
+.gridActions button{
+ padding:13px 20px;
+ font-size:10px;
+ letter-spacing:3px;
+}
+
+/* ================= FLOOR ================= */
+
+.floor{
+ position:absolute;
+ z-index:4;
+ bottom:0;
+ left:-30%;
+ width:160%;
+ height:33%;
+ transform:perspective(450px) rotateX(60deg);
+ transform-origin:bottom;
+ background:
+ linear-gradient(rgba(0,220,255,.22) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,220,255,.18) 1px,transparent 1px);
+ background-size:55px 55px;
+ box-shadow:0 -20px 70px rgba(0,200,255,.12);
+}
+
+/* ================= NAV ================= */
 
 .nav{
-position:absolute;
-z-index:80;
-left:50%;
-bottom:18px;
-transform:translateX(-50%);
-width:96%;
-max-width:500px;
-display:none;
-gap:5px;
+ position:absolute;
+ z-index:80;
+ left:14px;
+ right:14px;
+ bottom:14px;
+ height:82px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:8px;
 }
 
 .nav button{
-flex:1;
-min-width:0;
-padding:8px 2px;
-background:rgba(2,15,23,.94);
-border:1px solid rgba(35,220,255,.4);
-color:#a8eaf3;
-font-size:7px;
-letter-spacing:1px;
+ min-width:0;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
+ background:rgba(2,15,22,.9);
+ border-color:rgba(0,220,255,.3);
 }
 
-.nav button:active{
-border-color:#35ecff;
-box-shadow:0 0 15px #00cfff55;
+.nav .icon{
+ font-size:18px;
+ color:#28ddf7;
+ text-shadow:0 0 12px #00cfff;
 }
 
-.nav span{
-display:block;
-font-size:17px;
-color:#2ceaff;
-margin-bottom:4px;
+.nav span:last-child{
+ font-size:9px;
+ letter-spacing:2px;
+ color:#6d929b;
 }
 
-/* BACK */
+/* ================= PANEL ================= */
 
-.back{
-position:absolute;
-top:55px;
-left:18px;
-z-index:60;
-padding:8px 12px;
-background:#03131ddd;
-border:1px solid #20dfff66;
-color:#91efff;
-font-size:8px;
-letter-spacing:2px;
+.panelScreen{
+ padding:110px 25px 115px;
+ overflow:auto;
 }
-
-/* PANELS */
 
 .panel{
-position:absolute;
-left:50%;
-top:46%;
-transform:translate(-50%,-50%);
-width:88%;
-max-width:430px;
-padding:25px;
-background:rgba(2,15,24,.94);
-border:1px solid rgba(35,220,255,.55);
-box-shadow:0 0 50px rgba(0,180,255,.14);
+ width:min(760px,100%);
+ margin:auto;
+ border:1px solid rgba(0,220,255,.4);
+ background:
+ linear-gradient(145deg,rgba(0,25,35,.9),rgba(0,8,13,.92));
+ box-shadow:
+ inset 0 0 50px rgba(0,210,255,.04),
+ 0 0 40px rgba(0,180,255,.08);
+ padding:35px;
 }
 
-.panel h2{
-margin:0 0 15px;
-font-size:15px;
-letter-spacing:4px;
-color:#52eaff;
+.panel h1{
+ margin:0 0 20px;
+ font-size:27px;
+ letter-spacing:8px;
+ color:#54eaff;
+ text-shadow:0 0 18px #00d9ff;
 }
 
 .panel p{
-font-size:11px;
-line-height:1.7;
-color:#6996a1;
+ color:#729ba5;
+ line-height:1.8;
+ font-size:14px;
 }
 
 .bar{
-height:4px;
-margin-top:20px;
-background:#09232d;
+ height:6px;
+ background:#062b35;
+ margin:25px 0 10px;
+ overflow:hidden;
 }
 
 .bar i{
-display:block;
-height:100%;
-background:#27eaff;
-box-shadow:0 0 15px #00dfff;
+ display:block;
+ height:100%;
+ background:#20dcf7;
+ box-shadow:0 0 18px #00dfff;
 }
 
-/* IDENTITY DISC */
+/* ================= PROFILE ================= */
 
 .profile{
-position:absolute;
-left:50%;
-top:47%;
-transform:translate(-50%,-50%);
-width:100%;
-text-align:center;
+ text-align:center;
 }
 
 .disc{
-position:relative;
-width:min(70vw,280px);
-aspect-ratio:1;
-margin:auto;
-border-radius:50%;
-background:
-radial-gradient(circle,
-#dfffff 0 2%,
-#149bc1 2.5% 6%,
-#03141d 7% 17%,
-#0cdfff 17.5% 18%,
-#031018 19% 31%,
-#12dfff 31.5% 32%,
-#02090e 33% 49%,
-#0cdfff 49.5% 50%,
-#02090e 51% 65%,
-#20eaff 65.5% 66%,
-#02090e 67%);
-border:1px solid #43ecff;
-box-shadow:
-0 0 25px #00dfff77,
-0 0 80px #007cff44;
-animation:discSpin 10s linear infinite;
-}
-
-.disc:before{
-content:"";
-position:absolute;
-inset:12%;
-border:1px dashed rgba(90,240,255,.7);
-border-radius:50%;
+ width:min(330px,75vw);
+ aspect-ratio:1;
+ margin:10px auto 30px;
+ border-radius:50%;
+ position:relative;
+ background:
+ radial-gradient(circle,#06131b 0 12%,transparent 12.5%),
+ radial-gradient(circle,transparent 0 22%,#00dfff 22.4% 23%,transparent 23.5%),
+ radial-gradient(circle,transparent 0 39%,#00dfff 39.4% 40%,transparent 40.5%),
+ radial-gradient(circle,transparent 0 57%,#00dfff 57.4% 58%,transparent 58.5%),
+ radial-gradient(circle,transparent 0 75%,#00dfff 75.4% 76%,transparent 76.5%),
+ #02080d;
+ box-shadow:
+ 0 0 15px #00dfff,
+ 0 0 50px rgba(0,210,255,.4),
+ inset 0 0 50px rgba(0,210,255,.2);
 }
 
 .disc:after{
-content:"SAM";
-position:absolute;
-left:50%;
-top:50%;
-transform:translate(-50%,-50%);
-font-size:13px;
-letter-spacing:4px;
-color:#d9ffff;
-text-shadow:0 0 12px #00eaff;
+ content:"SAM";
+ position:absolute;
+ inset:0;
+ display:grid;
+ place-items:center;
+ font-size:20px;
+ letter-spacing:8px;
+ color:#d5fbff;
+ text-shadow:0 0 12px #00dfff;
 }
 
-@keyframes discSpin{
-to{transform:rotate(360deg)}
+/* ================= CITY ================= */
+
+.cityCard{
+ margin-top:20px;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
 }
 
-.profile h2{
-margin:22px 0 7px;
-font-size:14px;
-letter-spacing:5px;
+.cityCard div{
+ border:1px solid rgba(0,220,255,.25);
+ padding:20px 10px;
+ text-align:center;
+ background:rgba(0,20,28,.45);
 }
 
-.profile p{
-margin:5px;
-font-size:8px;
-letter-spacing:2px;
-color:#578895;
+.cityCard b{
+ display:block;
+ font-size:20px;
+ color:#2ee8ff;
+ margin-bottom:7px;
 }
 
-.holoWolf{
-font-size:48px;
-margin-top:15px;
-filter:
-drop-shadow(0 0 7px #fff)
-drop-shadow(0 0 15px #29eaff)
-drop-shadow(0 0 30px #007cff);
-animation:holo 1.8s infinite;
+.cityCard small{
+ color:#638d97;
+ letter-spacing:2px;
 }
 
-@keyframes holo{
-0%,100%{opacity:.95}
-45%{opacity:.55}
-48%{opacity:.9}
-52%{opacity:.35}
-55%{opacity:1}
+/* ================= LIGHTCYCLE ================= */
+
+#gameCanvas{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ background:#010508;
 }
 
-/* MOBILE */
+.gameHUD{
+ position:absolute;
+ z-index:30;
+ top:75px;
+ left:20px;
+ right:20px;
+ display:flex;
+ justify-content:space-between;
+ pointer-events:none;
+ font-size:11px;
+ letter-spacing:3px;
+}
 
-@media(max-height:650px){
-.portal,.wolf{top:40%}
-.entry{top:40%}
-.mainCenter{top:41%}
+.score{
+ color:#2ceaff;
+ text-shadow:0 0 12px #00dfff;
+}
+
+.gameHelp{
+ position:absolute;
+ z-index:30;
+ bottom:110px;
+ left:50%;
+ transform:translateX(-50%);
+ text-align:center;
+ font-size:9px;
+ letter-spacing:2px;
+ color:#5c858e;
+ pointer-events:none;
+}
+
+.gameControls{
+ position:absolute;
+ z-index:40;
+ left:50%;
+ bottom:25px;
+ transform:translateX(-50%);
+ display:grid;
+ grid-template-columns:repeat(3,58px);
+ grid-template-rows:repeat(2,58px);
+ gap:7px;
+}
+
+.gameControls button{
+ border-radius:5px;
+ font-size:20px;
+ background:rgba(0,30,40,.75);
+}
+
+#up{grid-column:2}
+#left{grid-column:1;grid-row:2}
+#down{grid-column:2;grid-row:2}
+#right{grid-column:3;grid-row:2}
+
+/* ================= BACK ================= */
+
+.back{
+ position:absolute;
+ z-index:60;
+ top:85px;
+ left:30px;
+ padding:11px 17px;
+ font-size:10px;
+ letter-spacing:3px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:500px){
+ .header{
+  padding:18px 18px;
+  height:65px;
+ }
+ .gridTop{
+  top:80px;
+  left:18px;
+  right:18px;
+ }
+ .panel{
+  padding:25px 20px;
+ }
+ .gridActions{
+  bottom:120px;
+ }
+ .gridActions button{
+  padding:11px 12px;
+  font-size:8px;
+ }
+ .cityCard{
+  grid-template-columns:1fr;
+ }
+}
+
+.scanlines{
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ z-index:90;
+ opacity:.08;
+ background:repeating-linear-gradient(
+  to bottom,
+  transparent 0px,
+  transparent 3px,
+  #8ff 4px
+ );
+ mix-blend-mode:screen;
+}
+
+.vignette{
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ z-index:91;
+ box-shadow:inset 0 0 140px #000;
 }
 </style>
 </head>
@@ -448,257 +526,1090 @@ animation:holo 1.8s infinite;
 
 <div id="app">
 
-<div class="grid"></div>
-<div class="scan"></div>
+<header class="header">
+ <div class="logo">G R I D // S A M</div>
+ <div class="status">SYSTEM <b>ONLINE</b></div>
+</header>
 
-<div class="top">
-<div class="logo">GRID // SAM</div>
-<div class="status">SYSTEM <b>ONLINE</b></div>
-</div>
+<!-- HOME -->
+<section id="home" class="screen home active">
 
+ <div class="homeCore">
 
-<!-- ENTRADA -->
+  <div class="kicker">DIGITAL FRONTIER // ACCESS POINT</div>
 
-<section id="home" class="screen active">
+  <h1 class="title">GRID</h1>
 
-<div class="portal"></div>
+  <div class="subtitle">
+   SAM // IDENTITY SYSTEM
+  </div>
 
-<div class="wolf">🐺</div>
+  <button class="enter" onclick="enterGrid()">
+   ENTER THE GRID
+  </button>
 
-<div class="entry">
-
-<button class="enter" onclick="enterGrid()">
-ENTRAR A LA GRID
-</button>
-
-<div class="subtitle">
-IDENTITY SYSTEM · GRID v3.0
-</div>
-
-</div>
+ </div>
 
 </section>
 
+<!-- CITY -->
+<section id="grid" class="screen">
 
-<!-- GRID PRINCIPAL -->
+ <canvas id="cityCanvas"></canvas>
 
-<section id="main" class="screen">
+ <div class="floor"></div>
 
-<div class="mainCenter">
+ <div class="gridUI">
 
-<div class="mainSymbol">🐺</div>
+  <div class="gridTop">
+   <div class="gridTitle">GRID CITY</div>
 
-<div class="mainTitle">
-WELCOME TO THE GRID
-</div>
+   <div class="cityInfo">
+    NETWORK // ACTIVE<br>
+    SECTOR <b>07</b><br>
+    CORE <b>ONLINE</b>
+   </div>
+  </div>
 
-<div class="mainText">
-SAM IDENTITY NETWORK · ONLINE
-</div>
+  <div class="gridCenter">
+   <div class="cityName">NEON CITY</div>
+   <div class="citySub">
+    DIGITAL TERRITORY // SAM USER
+   </div>
+  </div>
 
-</div>
+  <div class="gridActions">
+
+   <button onclick="openScreen('city')">
+    CITY
+   </button>
+
+   <button onclick="startGame()">
+    LIGHTCYCLE
+   </button>
+
+   <button onclick="openScreen('garage')">
+    GARAGE
+   </button>
+
+  </div>
+
+ </div>
 
 </section>
 
+<!-- PROFILE -->
+<section id="profile" class="screen panelScreen">
 
-<!-- PERFIL -->
+ <button class="back" onclick="backGrid()">← GRID</button>
 
-<section id="profile" class="screen">
+ <div class="panel profile">
 
-<button class="back" onclick="show('main')">
-← GRID
-</button>
+  <h1>IDENTITY</h1>
 
-<div class="profile">
+  <div class="disc"></div>
 
-<div class="disc"></div>
+  <h2>IDENTITY DISC</h2>
 
-<h2>IDENTITY DISC</h2>
+  <p>
+   SAM // GRID IDENTITY<br>
+   USER STATUS: ACTIVE
+  </p>
 
-<p>SAM · GRID IDENTITY</p>
+  <div class="bar">
+   <i style="width:94%"></i>
+  </div>
 
-<div class="holoWolf">🐺</div>
+  <p>IDENTITY CORE · 94%</p>
 
-<p>HOLOGRAPHIC WOLF SIGNATURE</p>
-
-</div>
+ </div>
 
 </section>
 
+<!-- CITY INFO -->
+<section id="city" class="screen panelScreen">
+
+ <button class="back" onclick="backGrid()">← GRID</button>
+
+ <div class="panel">
+
+  <h1>NEON CITY</h1>
+
+  <p>
+   La ciudad digital se encuentra activa.
+   Los sectores de la GRID están conectados
+   mediante rutas de energía y corredores de tránsito.
+  </p>
+
+  <div class="cityCard">
+
+   <div>
+    <b>124</b>
+    <small>SECTORS</small>
+   </div>
+
+   <div>
+    <b>87%</b>
+    <small>ONLINE</small>
+   </div>
+
+   <div>
+    <b>03</b>
+    <small>VEHICLES</small>
+   </div>
+
+  </div>
+
+  <div class="bar">
+   <i style="width:87%"></i>
+  </div>
+
+  <p>GRID CITY NETWORK · 87%</p>
+
+ </div>
+
+</section>
 
 <!-- GARAGE -->
+<section id="garage" class="screen panelScreen">
 
-<section id="garage" class="screen">
+ <button class="back" onclick="backGrid()">← GRID</button>
 
-<button class="back" onclick="show('main')">
-← GRID
-</button>
+ <div class="panel">
 
-<div class="panel">
+  <h1>GARAGE</h1>
 
-<h2>GARAGE</h2>
+  <p>
+   Hangar digital de vehículos.
+   Selecciona una unidad para acceder a sus datos.
+  </p>
 
-<p>
-Hangar digital de vehículos.
-Aquí podremos añadir tus motos,
-diseños y futuros modelos 3D.
-</p>
+  <div class="cityCard">
 
-<div class="bar">
-<i style="width:76%"></i>
-</div>
+   <div onclick="vehicle('Gixxer SF250')">
+    <b>01</b>
+    <small>GIXXER SF250</small>
+   </div>
 
-<p>VEHICLE SYSTEM · 76%</p>
+   <div onclick="vehicle('CR5 200')">
+    <b>02</b>
+    <small>CR5 200</small>
+   </div>
 
-</div>
+   <div onclick="vehicle('GSXR 150')">
+    <b>03</b>
+    <small>GSXR 150</small>
+   </div>
+
+  </div>
+
+  <div id="vehicleData"></div>
+
+ </div>
 
 </section>
-
 
 <!-- AI -->
+<section id="ai" class="screen panelScreen">
 
-<section id="ai" class="screen">
+ <button class="back" onclick="backGrid()">← GRID</button>
 
-<button class="back" onclick="show('main')">
-← GRID
-</button>
+ <div class="panel">
 
-<div class="panel">
+  <h1>AI CORE</h1>
 
-<h2>AI CORE</h2>
+  <p>
+   Núcleo de inteligencia artificial reservado
+   para el futuro asistente de la GRID.
+  </p>
 
-<p>
-Núcleo de inteligencia artificial
-reservado para el futuro asistente
-de la GRID.
-</p>
+  <div class="bar">
+   <i style="width:96%"></i>
+  </div>
 
-<div class="bar">
-<i style="width:91%"></i>
-</div>
+  <p>NEURAL CORE · 96%</p>
 
-<p>NEURAL CORE · 91%</p>
+  <button onclick="aiMessage()" style="padding:14px 22px;letter-spacing:3px">
+   INITIALIZE
+  </button>
 
-</div>
+  <p id="aiOutput"></p>
+
+ </div>
 
 </section>
-
 
 <!-- ARCHIVE -->
+<section id="archive" class="screen panelScreen">
 
-<section id="archive" class="screen">
+ <button class="back" onclick="backGrid()">← GRID</button>
 
-<button class="back" onclick="show('main')">
-← GRID
-</button>
+ <div class="panel">
 
-<div class="panel">
+  <h1>ARCHIVE</h1>
 
-<h2>ARCHIVE</h2>
+  <p>
+   Centro de almacenamiento para proyectos,
+   imágenes, documentos y registros de la GRID.
+  </p>
 
-<p>
-Centro de almacenamiento para
-proyectos, imágenes, documentos
-y registros de la GRID.
-</p>
+  <div class="bar">
+   <i style="width:63%"></i>
+  </div>
 
-<div class="bar">
-<i style="width:63%"></i>
-</div>
+  <p>ARCHIVE STORAGE · 63%</p>
 
-<p>ARCHIVE STORAGE · 63%</p>
-
-</div>
+ </div>
 
 </section>
-
 
 <!-- SYSTEM -->
+<section id="system" class="screen panelScreen">
 
-<section id="system" class="screen">
+ <button class="back" onclick="backGrid()">← GRID</button>
 
-<button class="back" onclick="show('main')">
-← GRID
-</button>
+ <div class="panel">
 
-<div class="panel">
+  <h1>SYSTEM</h1>
 
-<h2>SYSTEM</h2>
+  <p>
+   GRID CORE ONLINE.
+   Interfaz preparada para futuras funciones,
+   sonido, comandos y módulos.
+  </p>
 
-<p>
-GRID CORE ONLINE.
-Interfaz preparada para futuras
-funciones, sonido y comandos.
-</p>
+  <div class="bar">
+   <i style="width:100%"></i>
+  </div>
 
-<div class="bar">
-<i style="width:100%"></i>
-</div>
+  <p>SYSTEM STATUS · 100%</p>
 
-<p>SYSTEM STATUS · 100%</p>
+  <p id="fps">FPS · --</p>
 
-</div>
+ </div>
 
 </section>
 
+<!-- LIGHTCYCLE -->
+<section id="game" class="screen">
 
-<!-- MENU -->
+ <canvas id="gameCanvas"></canvas>
 
-<nav id="nav" class="nav">
+ <div class="gameHUD">
+  <div class="score">
+   SCORE <span id="score">0</span>
+  </div>
 
-<button onclick="show('profile')">
-<span>◉</span>
-PERFIL
-</button>
+  <div>
+   LIGHTCYCLE // <span id="speed">1.0</span>X
+  </div>
+ </div>
 
-<button onclick="show('garage')">
-<span>◇</span>
-GARAGE
-</button>
+ <button class="back" onclick="exitGame()">← EXIT</button>
 
-<button onclick="show('ai')">
-<span>◈</span>
-AI
-</button>
+ <div class="gameHelp">
+  DESLIZA / USA LAS FLECHAS PARA GIRAR
+ </div>
 
-<button onclick="show('archive')">
-<span>▣</span>
-ARCHIVE
-</button>
+ <div class="gameControls">
 
-<button onclick="show('system')">
-<span>⚙</span>
-SYSTEM
-</button>
+  <button id="up">▲</button>
+  <button id="left">◀</button>
+  <button id="down">▼</button>
+  <button id="right">▶</button>
+
+ </div>
+
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+
+ <button onclick="openScreen('profile')">
+  <div class="icon">◉</div>
+  <span>PERFIL</span>
+ </button>
+
+ <button onclick="openScreen('garage')">
+  <div class="icon">◇</div>
+  <span>GARAGE</span>
+ </button>
+
+ <button onclick="openScreen('ai')">
+  <div class="icon">◈</div>
+  <span>AI</span>
+ </button>
+
+ <button onclick="openScreen('archive')">
+  <div class="icon">▣</div>
+  <span>ARCHIVE</span>
+ </button>
+
+ <button onclick="openScreen('system')">
+  <div class="icon">⚙</div>
+  <span>SYSTEM</span>
+ </button>
 
 </nav>
 
+<div class="scanlines"></div>
 <div class="vignette"></div>
 
 </div>
 
-
 <script>
 
-function enterGrid(){
+/* =====================================================
+   GRID NAVIGATION
+===================================================== */
 
-document.getElementById("nav").style.display="flex";
-
-show("main");
-
-}
+const screens=document.querySelectorAll(".screen");
 
 function show(id){
+ screens.forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
 
-document.querySelectorAll(".screen").forEach(function(screen){
+function enterGrid(){
+ show("grid");
+ initCity();
+}
 
-screen.classList.remove("active");
+function openScreen(id){
+ show(id);
+}
 
+function backGrid(){
+ show("grid");
+ initCity();
+}
+
+/* =====================================================
+   GARAGE
+===================================================== */
+
+function vehicle(name){
+
+ const box=document.getElementById("vehicleData");
+
+ box.innerHTML=`
+ <div style="
+ margin-top:25px;
+ padding:22px;
+ border:1px solid rgba(0,220,255,.3);
+ background:rgba(0,20,28,.45)">
+ <h2 style="
+ color:#2ee8ff;
+ letter-spacing:4px">${name}</h2>
+
+ <p>
+ STATUS: ONLINE<br>
+ ENERGY: 100%<br>
+ SYSTEM: GRID READY
+ </p>
+
+ <div class="bar">
+  <i style="width:100%"></i>
+ </div>
+ </div>`;
+}
+
+/* =====================================================
+   AI
+===================================================== */
+
+function aiMessage(){
+
+ const out=document.getElementById("aiOutput");
+
+ const messages=[
+  "GRID CORE INITIALIZED.",
+  "NEURAL SYSTEM ONLINE.",
+  "WELCOME BACK, SAM.",
+  "ALL SYSTEMS NOMINAL."
+ ];
+
+ let i=0;
+ out.textContent="";
+
+ const timer=setInterval(()=>{
+
+  out.textContent+=messages[i]+" ";
+
+  i++;
+
+  if(i>=messages.length)
+   clearInterval(timer);
+
+ },500);
+}
+
+/* =====================================================
+   3D CITY
+===================================================== */
+
+const cityCanvas=document.getElementById("cityCanvas");
+const ctx=cityCanvas.getContext("2d");
+
+let cityAnimation;
+
+function resizeCity(){
+
+ cityCanvas.width=innerWidth*devicePixelRatio;
+ cityCanvas.height=innerHeight*devicePixelRatio;
+
+ cityCanvas.style.width=innerWidth+"px";
+ cityCanvas.style.height=innerHeight+"px";
+
+ ctx.setTransform(
+  devicePixelRatio,0,0,devicePixelRatio,0,0
+ );
+}
+
+window.addEventListener("resize",resizeCity);
+resizeCity();
+
+const buildings=[];
+
+function makeBuildings(){
+
+ buildings.length=0;
+
+ for(let i=0;i<80;i++){
+
+  buildings.push({
+
+   x:(Math.random()*2-1)*1.7,
+
+   z:Math.random()*1,
+
+   w:.08+Math.random()*.18,
+
+   h:.12+Math.random()*.65,
+
+   seed:Math.random()*1000
+
+  });
+
+ }
+}
+
+function project(x,z){
+
+ const horizon=innerHeight*.45;
+
+ const depth=.25+z*.95;
+
+ return {
+  x:innerWidth/2+x*innerWidth/depth,
+  y:horizon+(z*innerHeight*.55),
+  scale:1/depth
+ };
+}
+
+function drawBuilding(b){
+
+ const p=project(b.x,b.z);
+
+ const width=b.w*innerWidth*p.scale;
+ const height=b.h*innerHeight*p.scale;
+
+ const x=p.x-width/2;
+ const y=p.y-height;
+
+ ctx.strokeStyle="rgba(0,205,255,.25)";
+ ctx.lineWidth=1;
+
+ ctx.fillStyle="rgba(1,16,23,.85)";
+
+ ctx.fillRect(x,y,width,height);
+ ctx.strokeRect(x,y,width,height);
+
+ const rows=Math.max(2,Math.floor(height/16));
+ const cols=Math.max(1,Math.floor(width/14));
+
+ for(let r=0;r<rows;r++){
+
+  for(let c=0;c<cols;c++){
+
+   const on=((Math.floor(b.seed+r*7+c*3))%5)!==0;
+
+   if(!on) continue;
+
+   const wx=x+5+c*(width/cols);
+   const wy=y+7+r*(height/rows);
+
+   ctx.fillStyle="rgba(0,220,255,.45)";
+
+   ctx.fillRect(
+    wx,
+    wy,
+    Math.max(1,width/cols*.28),
+    Math.max(1,height/rows*.18)
+   );
+  }
+ }
+}
+
+function drawCity(){
+
+ ctx.clearRect(0,0,innerWidth,innerHeight);
+
+ const grad=ctx.createRadialGradient(
+  innerWidth/2,
+  innerHeight*.48,
+  10,
+  innerWidth/2,
+  innerHeight*.48,
+  innerHeight*.65
+ );
+
+ grad.addColorStop(0,"rgba(0,120,170,.15)");
+ grad.addColorStop(1,"rgba(0,0,0,0)");
+
+ ctx.fillStyle=grad;
+ ctx.fillRect(0,0,innerWidth,innerHeight);
+
+ buildings
+ .sort((a,b)=>b.z-a.z)
+ .forEach(drawBuilding);
+
+ /* central tower */
+
+ const towerW=innerWidth*.09;
+ const towerH=innerHeight*.43;
+ const towerX=innerWidth/2-towerW/2;
+ const towerY=innerHeight*.45-towerH;
+
+ ctx.fillStyle="rgba(0,18,26,.95)";
+ ctx.strokeStyle="rgba(0,220,255,.5)";
+
+ ctx.fillRect(
+  towerX,
+  towerY,
+  towerW,
+  towerH
+ );
+
+ ctx.strokeRect(
+  towerX,
+  towerY,
+  towerW,
+  towerH
+ );
+
+ ctx.fillStyle="#20dff8";
+
+ for(let y=towerY+20;y<towerY+towerH;y+=25){
+
+  ctx.fillRect(
+   towerX+8,
+   y,
+   towerW-16,
+   2
+  );
+
+ }
+
+ /* horizon */
+
+ ctx.strokeStyle="rgba(0,220,255,.35)";
+ ctx.beginPath();
+
+ ctx.moveTo(0,innerHeight*.45);
+ ctx.lineTo(innerWidth,innerHeight*.45);
+
+ ctx.stroke();
+
+ cityAnimation=requestAnimationFrame(drawCity);
+}
+
+function initCity(){
+
+ if(cityAnimation)
+  cancelAnimationFrame(cityAnimation);
+
+ makeBuildings();
+ drawCity();
+}
+
+/* =====================================================
+   LIGHTCYCLE GAME
+===================================================== */
+
+const gameCanvas=document.getElementById("gameCanvas");
+const g=gameCanvas.getContext("2d");
+
+let gameRunning=false;
+let gameLoopId;
+
+let score=0;
+let speed=1;
+
+let player;
+let enemy;
+
+let trail=[];
+let enemyTrail=[];
+
+const directions=[
+ {x:0,y:-1},
+ {x:1,y:0},
+ {x:0,y:1},
+ {x:-1,y:0}
+];
+
+let dir=0;
+let enemyDir=2;
+
+function resizeGame(){
+
+ gameCanvas.width=innerWidth*devicePixelRatio;
+ gameCanvas.height=innerHeight*devicePixelRatio;
+
+ gameCanvas.style.width=innerWidth+"px";
+ gameCanvas.style.height=innerHeight+"px";
+
+ g.setTransform(
+  devicePixelRatio,0,0,devicePixelRatio,0,0
+ );
+}
+
+window.addEventListener("resize",resizeGame);
+resizeGame();
+
+function startGame(){
+
+ show("game");
+
+ resizeGame();
+
+ score=0;
+ speed=1;
+
+ document.getElementById("score").textContent=score;
+ document.getElementById("speed").textContent=speed.toFixed(1);
+
+ player={
+  x:innerWidth*.28,
+  y:innerHeight*.72
+ };
+
+ enemy={
+  x:innerWidth*.72,
+  y:innerHeight*.28
+ };
+
+ dir=0;
+ enemyDir=2;
+
+ trail=[];
+ enemyTrail=[];
+
+ gameRunning=true;
+
+ if(gameLoopId)
+  cancelAnimationFrame(gameLoopId);
+
+ gameLoopId=requestAnimationFrame(gameFrame);
+}
+
+function exitGame(){
+
+ gameRunning=false;
+
+ if(gameLoopId)
+  cancelAnimationFrame(gameLoopId);
+
+ show("grid");
+ initCity();
+}
+
+function turnLeft(){
+ dir=(dir+3)%4;
+}
+
+function turnRight(){
+ dir=(dir+1)%4;
+}
+
+function movePoint(p,d,s){
+
+ p.x+=directions[d].x*s;
+ p.y+=directions[d].y*s;
+}
+
+function hitWall(p){
+
+ return (
+  p.x<5 ||
+  p.x>innerWidth-5 ||
+  p.y<75 ||
+  p.y>innerHeight-100
+ );
+}
+
+function hitTrail(p,t){
+
+ for(let i=0;i<t.length;i+=2){
+
+  const q=t[i];
+
+  if(
+   Math.abs(p.x-q.x)<8 &&
+   Math.abs(p.y-q.y)<8
+  )
+   return true;
+ }
+
+ return false;
+}
+
+function gameFrame(){
+
+ if(!gameRunning)
+  return;
+
+ const step=3.2*speed;
+
+ trail.push({
+  x:player.x,
+  y:player.y
+ });
+
+ enemyTrail.push({
+  x:enemy.x,
+  y:enemy.y
+ });
+
+ movePoint(player,dir,step);
+ movePoint(enemy,enemyDir,step*.85);
+
+ /* enemy AI */
+
+ if(Math.random()<.018){
+
+  const options=[
+   (enemyDir+1)%4,
+   (enemyDir+3)%4
+  ];
+
+  const candidate=options[
+   Math.floor(Math.random()*2)
+  ];
+
+  enemyDir=candidate;
+ }
+
+ /* enemy tries avoiding walls */
+
+ if(
+  enemy.x<80 ||
+  enemy.x>innerWidth-80 ||
+  enemy.y<140 ||
+  enemy.y>innerHeight-160
+ ){
+  enemyDir=(enemyDir+2)%4;
+ }
+
+ if(
+  hitWall(player) ||
+  hitTrail(player,trail) ||
+  hitTrail(player,enemyTrail)
+ ){
+  gameOver(false);
+  return;
+ }
+
+ if(
+  hitWall(enemy) ||
+  hitTrail(enemy,trail)
+ ){
+  score+=100;
+  enemy={
+   x:Math.random()>.5?innerWidth*.75:innerWidth*.25,
+   y:Math.random()>.5?innerHeight*.25:innerHeight*.7
+  };
+
+  enemyTrail=[];
+ }
+
+ score++;
+
+ if(score%800===0){
+
+  speed+=.1;
+
+  document.getElementById("speed")
+  .textContent=speed.toFixed(1);
+ }
+
+ document.getElementById("score")
+ .textContent=score;
+
+ drawGame();
+
+ gameLoopId=requestAnimationFrame(gameFrame);
+}
+
+function neonLine(points,color,width){
+
+ if(points.length<2)
+  return;
+
+ g.beginPath();
+
+ g.moveTo(
+  points[0].x,
+  points[0].y
+ );
+
+ for(let i=1;i<points.length;i++){
+
+  g.lineTo(
+   points[i].x,
+   points[i].y
+  );
+ }
+
+ g.strokeStyle=color;
+ g.lineWidth=width;
+ g.shadowBlur=18;
+ g.shadowColor=color;
+ g.stroke();
+
+ g.shadowBlur=0;
+}
+
+function drawGame(){
+
+ g.fillStyle="#010508";
+ g.fillRect(0,0,innerWidth,innerHeight);
+
+ /* grid */
+
+ g.strokeStyle="rgba(0,180,220,.08)";
+ g.lineWidth=1;
+
+ for(let x=0;x<innerWidth;x+=40){
+
+  g.beginPath();
+  g.moveTo(x,0);
+  g.lineTo(x,innerHeight);
+  g.stroke();
+ }
+
+ for(let y=70;y<innerHeight;y+=40){
+
+  g.beginPath();
+  g.moveTo(0,y);
+  g.lineTo(innerWidth,y);
+  g.stroke();
+ }
+
+ neonLine(
+  trail,
+  "#00eaff",
+  3
+ );
+
+ neonLine(
+  enemyTrail,
+  "#ff245d",
+  3
+ );
+
+ drawBike(
+  player,
+  "#00eaff",
+  dir
+ );
+
+ drawBike(
+  enemy,
+  "#ff245d",
+  enemyDir
+ );
+}
+
+function drawBike(p,color,d){
+
+ g.save();
+
+ g.translate(p.x,p.y);
+
+ g.rotate(
+  d===0?0:
+  d===1?Math.PI/2:
+  d===2?Math.PI:
+  -Math.PI/2
+ );
+
+ g.shadowBlur=25;
+ g.shadowColor=color;
+
+ g.strokeStyle=color;
+ g.lineWidth=3;
+
+ g.beginPath();
+ g.moveTo(-18,0);
+ g.lineTo(18,0);
+ g.stroke();
+
+ g.fillStyle=color;
+
+ g.fillRect(-12,-4,24,8);
+
+ g.fillStyle="#02070b";
+
+ g.fillRect(-4,-3,8,6);
+
+ g.restore();
+}
+
+function gameOver(win){
+
+ gameRunning=false;
+
+ setTimeout(()=>{
+
+  const message=win?
+   "LIGHTCYCLE VICTORY":
+   "LIGHTCYCLE TERMINATED";
+
+  if(confirm(
+   message+
+   "\\n\\nSCORE: "+
+   score+
+   "\\n\\n¿Jugar nuevamente?"
+  )){
+   startGame();
+  }else{
+   exitGame();
+  }
+
+ },100);
+}
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+document.getElementById("left")
+ .addEventListener("pointerdown",turnLeft);
+
+document.getElementById("right")
+ .addEventListener("pointerdown",turnRight);
+
+document.getElementById("up")
+ .addEventListener("pointerdown",()=>{
+  /* accelerate */
+  speed=Math.min(2.5,speed+.1);
+ });
+
+document.getElementById("down")
+ .addEventListener("pointerdown",()=>{
+  speed=Math.max(.7,speed-.1);
+ });
+
+window.addEventListener("keydown",e=>{
+
+ if(!gameRunning)
+  return;
+
+ if(e.key==="ArrowLeft")
+  turnLeft();
+
+ if(e.key==="ArrowRight")
+  turnRight();
+
+ if(e.key==="ArrowUp")
+  speed=Math.min(2.5,speed+.1);
+
+ if(e.key==="ArrowDown")
+  speed=Math.max(.7,speed-.1);
 });
 
-document.getElementById(id).classList.add("active");
+/* swipe */
 
+let touchStartX=0;
+let touchStartY=0;
+
+window.addEventListener("touchstart",e=>{
+
+ if(!gameRunning)
+  return;
+
+ const t=e.touches[0];
+
+ touchStartX=t.clientX;
+ touchStartY=t.clientY;
+
+},{passive:true});
+
+window.addEventListener("touchend",e=>{
+
+ if(!gameRunning)
+  return;
+
+ const t=e.changedTouches[0];
+
+ const dx=t.clientX-touchStartX;
+ const dy=t.clientY-touchStartY;
+
+ if(Math.abs(dx)<25 && Math.abs(dy)<25)
+  return;
+
+ if(Math.abs(dx)>Math.abs(dy)){
+
+  if(dx>0)
+   turnRight();
+  else
+   turnLeft();
+
+ }else{
+
+  if(dy<0)
+   speed=Math.min(2.5,speed+.1);
+  else
+   speed=Math.max(.7,speed-.1);
+
+ }
+
+},{passive:true});
+
+/* =====================================================
+   FPS
+===================================================== */
+
+let fcount=0;
+let ftime=performance.now();
+
+function fpsTick(now){
+
+ fcount++;
+
+ if(now-ftime>1000){
+
+  const el=document.getElementById("fps");
+
+  if(el)
+   el.textContent="FPS · "+fcount;
+
+  fcount=0;
+  ftime=now;
+ }
+
+ requestAnimationFrame(fpsTick);
 }
+
+requestAnimationFrame(fpsTick);
+
+/* =====================================================
+   START
+===================================================== */
+
+show("home");
 
 </script>
 
